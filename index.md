@@ -4,7 +4,7 @@
 
 ### Customer Churn
 
-<img src="images/dummy_thumbnail.jpg?raw=true">[](/sample_page)</img>
+<img src="[/Blog%20Images/Reducing%20Customer%20Churn%20Rate.webp](https://www.universalcreativesolutions.com/Blog%20Images/Reducing%20Customer%20Churn%20Rate.webp)">[](/https://github.com/Abhijith-Upadhya/data-analytics-portfolio/tree/main/Customer%20Churn)</img>
 
 ---
 

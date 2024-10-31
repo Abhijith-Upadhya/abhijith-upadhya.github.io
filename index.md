@@ -4,7 +4,7 @@
 
 ### Customer Churn
 
-<a href=""><img src="https://chargezoom.com/hubfs/Imported_Blog_Media/churn.png"/></a>
+<a href="https://github.com/Abhijith-Upadhya/abhijith-upadhya.github.io/tree/main/Customer%20Churn"><img src="https://chargezoom.com/hubfs/Imported_Blog_Media/churn.png"/></a>
 
 ---
 

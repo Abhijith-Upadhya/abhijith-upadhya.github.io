@@ -22,7 +22,7 @@
 
 ### Store Sales - EDA and Analysis
 
-<a href = "" target = "_blank"><img src="https://www.yourretailcoach.in/wp-content/uploads/2020/07/How-to-increase-retail-sales@2x-1080x675.png"/></a>
+<a href = "https://github.com/Abhijith-Upadhya/abhijith-upadhya.github.io/tree/main/Store%20Sales" target = "_blank"><img src="https://www.yourretailcoach.in/wp-content/uploads/2020/07/How-to-increase-retail-sales@2x-1080x675.png"/></a>
 
 ---
 

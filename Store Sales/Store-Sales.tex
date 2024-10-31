@@ -1,0 +1,951 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Store Sales},
+  pdfauthor={Abhijith},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Store Sales}
+\author{Abhijith}
+\date{2024-10-20}
+
+\begin{document}
+\maketitle
+
+\hypertarget{this-is-an-r-markdown-document-focusing-on-data-visualization}{%
+\section{This is an R Markdown document focusing on Data
+Visualization}\label{this-is-an-r-markdown-document-focusing-on-data-visualization}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(RColorBrewer)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'RColorBrewer' was built under R version 4.3.1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(dplyr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'dplyr' was built under R version 4.3.3
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'dplyr'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'ggplot2' was built under R version 4.3.3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tidyr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'tidyr' was built under R version 4.3.3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(readr)}
+\FunctionTok{library}\NormalTok{(forcats)}
+\FunctionTok{library}\NormalTok{(maps)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'maps' was built under R version 4.3.3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(sf)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'sf' was built under R version 4.3.1
+\end{verbatim}
+
+\begin{verbatim}
+## Linking to GEOS 3.11.2, GDAL 3.6.2, PROJ 9.2.0; sf_use_s2() is TRUE
+\end{verbatim}
+
+\hypertarget{loading-the-dataset}{%
+\subsection{Loading the dataset}\label{loading-the-dataset}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Load the dataset}
+\NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"SuperStore\_Sales\_DataSet.csv"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Rows: 5901 Columns: 20
+## -- Column specification --------------------------------------------------------
+## Delimiter: ","
+## chr (17): Order_ID, Order_Date, Ship_Date, Ship_Mode, Customer_ID, Customer_...
+## dbl  (3): Sales, Quantity, Profit
+## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+\end{verbatim}
+
+\hypertarget{transforming-the-data-and-calculating-basic-metrics}{%
+\subsection{Transforming the data and calculating basic
+metrics}\label{transforming-the-data-and-calculating-basic-metrics}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Order\_Date =} \FunctionTok{as.Date}\NormalTok{(Order\_Date, }\AttributeTok{format=}\StringTok{"\%m/\%d/\%Y"}\NormalTok{),}
+         \AttributeTok{Ship\_Date =} \FunctionTok{as.Date}\NormalTok{(Ship\_Date, }\AttributeTok{format=}\StringTok{"\%m/\%d/\%Y"}\NormalTok{),}
+         \AttributeTok{Sales =} \FunctionTok{as.numeric}\NormalTok{(Sales),}
+         \AttributeTok{Quantity =} \FunctionTok{as.numeric}\NormalTok{(Quantity),}
+         \AttributeTok{Profit =} \FunctionTok{as.numeric}\NormalTok{(Profit)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(Sales), }\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(Quantity), }\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(Profit))}
+
+\CommentTok{\# A. Calculate metrics}
+\NormalTok{total\_orders }\OtherTok{\textless{}{-}} \FunctionTok{nrow}\NormalTok{(data)}
+\NormalTok{total\_sales\_inr }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Sales) }\SpecialCharTok{*} \FloatTok{84.10}  \CommentTok{\# Assuming 1 USD = 75 INR}
+\NormalTok{average\_product\_quantity }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Quantity)}
+\NormalTok{average\_delivery\_days }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(}\FunctionTok{as.numeric}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{Ship\_Date }\SpecialCharTok{{-}}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{Order\_Date))}
+
+\CommentTok{\# Print results}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Total Orders:"}\NormalTok{, total\_orders, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Total Orders: 5901
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Total Sales in Indian Rupees:"}\NormalTok{, total\_sales\_inr, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Total Sales in Indian Rupees: 131684144
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Average Product Quantity:"}\NormalTok{, average\_product\_quantity, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Average Product Quantity: 3.781901
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Average Delivery Days:"}\NormalTok{, average\_delivery\_days, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Average Delivery Days: NA
+\end{verbatim}
+
+\hypertarget{sales-and-profit-for-the-year-2019-and-2020}{%
+\subsection{Sales and Profit for the year 2019 and
+2020}\label{sales-and-profit-for-the-year-2019-and-2020}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# B. Create plots for Sales and Profit for 2019 and 2020}
+\NormalTok{data\_years }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(}\FunctionTok{format}\NormalTok{(Order\_Date, }\StringTok{"\%Y"}\NormalTok{) }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"2019"}\NormalTok{, }\StringTok{"2020"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(}\AttributeTok{year =} \FunctionTok{format}\NormalTok{(Order\_Date, }\StringTok{"\%Y"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total\_Sales =} \FunctionTok{sum}\NormalTok{(Sales), }\AttributeTok{Total\_Profit =} \FunctionTok{sum}\NormalTok{(Profit))}
+
+
+\FunctionTok{ggplot}\NormalTok{(data\_years, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ year)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Total\_Sales), }\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{fill =} \FunctionTok{brewer.pal}\NormalTok{(}\DecValTok{3}\NormalTok{, }\StringTok{"Blues"}\NormalTok{)[}\DecValTok{2}\NormalTok{], }\AttributeTok{width =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Total\_Profit), }\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{fill =} \FunctionTok{brewer.pal}\NormalTok{(}\DecValTok{3}\NormalTok{, }\StringTok{"Reds"}\NormalTok{)[}\DecValTok{2}\NormalTok{], }\AttributeTok{width =} \FloatTok{0.4}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Sales and Profit for 2019 and 2020"}\NormalTok{, }
+       \AttributeTok{y =} \StringTok{"Amount"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Year"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{15}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"right"}\NormalTok{,}
+        \AttributeTok{legend.title =} \FunctionTok{element\_blank}\NormalTok{(),}
+        \AttributeTok{text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{family =} \StringTok{"serif"}\NormalTok{),}
+        \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{size =} \DecValTok{16}\NormalTok{, }\AttributeTok{face =} \StringTok{"bold"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/sales2019/20-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}\AttributeTok{labels =}\NormalTok{ scales}\SpecialCharTok{::}\NormalTok{comma)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## <ScaleContinuousPosition>
+##  Range:  
+##  Limits:    0 --    1
+\end{verbatim}
+
+\hypertarget{category-details}{%
+\subsection{Category Details}\label{category-details}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# C. Create donut charts for various categories}
+\NormalTok{sales\_by\_region }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Region) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Sales =} \FunctionTok{sum}\NormalTok{(Sales))}
+
+\NormalTok{sales\_by\_payment\_mode }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Payment\_Mode) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Sales =} \FunctionTok{sum}\NormalTok{(Sales))}
+
+\NormalTok{sales\_by\_segment }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Segment) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Sales =} \FunctionTok{sum}\NormalTok{(Sales))}
+
+\NormalTok{sales\_by\_shipment\_mode }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Ship\_Mode) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Sales =} \FunctionTok{sum}\NormalTok{(Sales))}
+
+\NormalTok{sales\_by\_category }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Category) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Sales =} \FunctionTok{sum}\NormalTok{(Sales))}
+
+\NormalTok{sales\_by\_sub\_category }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Sub\_Category) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Sales =} \FunctionTok{sum}\NormalTok{(Sales))}
+
+
+\CommentTok{\# Function to create donut chart}
+\NormalTok{create\_donut\_chart }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(data, category, title) \{}
+  \FunctionTok{ggplot}\NormalTok{(data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \DecValTok{2}\NormalTok{, }\AttributeTok{y =}\NormalTok{ Sales, }\AttributeTok{fill =} \SpecialCharTok{!!}\FunctionTok{sym}\NormalTok{(category))) }\SpecialCharTok{+} 
+    \FunctionTok{geom\_col}\NormalTok{(}\AttributeTok{width =} \DecValTok{1}\NormalTok{, }\AttributeTok{color =} \StringTok{"white"}\NormalTok{) }\SpecialCharTok{+} 
+    \FunctionTok{coord\_polar}\NormalTok{(}\AttributeTok{theta =} \StringTok{"y"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{xlim}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\FloatTok{2.5}\NormalTok{) }\SpecialCharTok{+} \CommentTok{\# This makes it a donut chart instead of a pie chart}
+    \FunctionTok{theme\_void}\NormalTok{() }\SpecialCharTok{+} 
+    \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"right"}\NormalTok{,}
+          \AttributeTok{legend.title =} \FunctionTok{element\_blank}\NormalTok{(),}
+          \AttributeTok{text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{family =} \StringTok{"serif"}\NormalTok{),}
+          \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{size =} \DecValTok{16}\NormalTok{, }\AttributeTok{face =} \StringTok{"bold"}\NormalTok{)) }\SpecialCharTok{+}
+    \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =}\NormalTok{ title, }\AttributeTok{fill =}\NormalTok{ category)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{plotting-the-necessary-details}{%
+\subsection{Plotting the necessary
+details}\label{plotting-the-necessary-details}}
+
+\hypertarget{a.-sales-by-region}{%
+\section{a. Sales by Region}\label{a.-sales-by-region}}
+
+This chart shows the distribution of total sales across different
+regions. Regions with larger portions contribute more to the company's
+revenue. This visualization helps in identifying the most lucrative
+regions for focusing marketing campaigns or expansion strategies.
+
+By understanding which region contributes the most to sales, the company
+can focus on region-specific promotions or address underperforming areas
+with targeted strategies.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{create\_donut\_chart}\NormalTok{(sales\_by\_region, }\StringTok{"Region"}\NormalTok{, }\StringTok{"Sales by Region"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/region-1.pdf}
+
+\hypertarget{b.-sales-by-payment-mode}{%
+\section{b. Sales by Payment Mode}\label{b.-sales-by-payment-mode}}
+
+This chart highlights the popularity of different payment methods. A
+higher portion for a specific payment mode means customers prefer that
+method.
+
+Recognizing the preferred payment modes allows the business to ensure
+that these options are always available and improve the payment
+experience for users, potentially increasing conversion rates.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{create\_donut\_chart}\NormalTok{(sales\_by\_payment\_mode, }\StringTok{"Payment\_Mode"}\NormalTok{, }\StringTok{"Sales by Payment Mode"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/payment_mode-1.pdf}
+
+\hypertarget{c.-sales-by-segment}{%
+\section{c.~Sales by Segment}\label{c.-sales-by-segment}}
+
+This shows how much revenue is generated from various customer segments,
+such as ``Consumer,'' ``Corporate,'' and ``Home Office.''
+
+Identifying the customer segments generating the most revenue helps in
+tailoring marketing campaigns to target high-value customers and
+maintain growth.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{create\_donut\_chart}\NormalTok{(sales\_by\_segment, }\StringTok{"Segment"}\NormalTok{, }\StringTok{"Sales by Segment"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/segments-1.pdf}
+
+\hypertarget{d.-sales-by-shipment-mode}{%
+\section{d.~Sales by Shipment Mode}\label{d.-sales-by-shipment-mode}}
+
+This chart shows how different shipping methods contribute to total
+sales. Shipment options could range from standard to express delivery.
+
+Understanding which shipping methods are preferred by customers enables
+optimization of delivery services, improving customer satisfaction and
+reducing logistics costs.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{create\_donut\_chart}\NormalTok{(sales\_by\_shipment\_mode, }\StringTok{"Ship\_Mode"}\NormalTok{, }\StringTok{"Sales by Shipment Mode"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/shipment_mode-1.pdf}
+
+\hypertarget{e.-sales-by-category-and-sub-category}{%
+\section{e. Sales by Category and
+Sub-Category}\label{e.-sales-by-category-and-sub-category}}
+
+This visualizes the distribution of sales among various product
+categories and sub-categories, such as technology, furniture, or office
+supplies.
+
+Identifying the top-performing product categories helps in inventory
+planning, improving product offerings, and expanding product lines that
+resonate with customers.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{create\_donut\_chart}\NormalTok{(sales\_by\_category, }\StringTok{"Category"}\NormalTok{, }\StringTok{"Sales by Category"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/category-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{create\_donut\_chart}\NormalTok{(sales\_by\_sub\_category, }\StringTok{"Sub\_Category"}\NormalTok{, }\StringTok{"Sales by Sub{-}Category"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/category-2.pdf}
+
+\hypertarget{observations}{%
+\subsection{Observations}\label{observations}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# D. Create stacked charts for various categories}
+\NormalTok{popular\_payment\_modes }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Payment\_Mode) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total\_Sales =} \FunctionTok{sum}\NormalTok{(Sales), }\AttributeTok{Total\_Profit =} \FunctionTok{sum}\NormalTok{(Profit))}
+
+\NormalTok{product\_segments }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Segment) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total\_Sales =} \FunctionTok{sum}\NormalTok{(Sales))}
+
+\NormalTok{categories\_data }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Category) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total\_Sales =} \FunctionTok{sum}\NormalTok{(Sales))}
+
+\NormalTok{delivery\_type\_region }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Ship\_Mode, Region) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total\_Sales =} \FunctionTok{sum}\NormalTok{(Sales))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` has grouped output by 'Ship_Mode'. You can override using the
+## `.groups` argument.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Enhanced Stacked Bar Chart}
+\NormalTok{create\_stacked\_bar\_chart }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(data, x\_var, fill\_var, title) \{}
+  \FunctionTok{ggplot}\NormalTok{(data, }\FunctionTok{aes\_string}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x\_var, }\AttributeTok{y =} \StringTok{"Total\_Sales"}\NormalTok{, }\AttributeTok{fill =}\NormalTok{ fill\_var)) }\SpecialCharTok{+} 
+    \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{width =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+} 
+    \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =}\NormalTok{ title, }\AttributeTok{x =}\NormalTok{ x\_var, }\AttributeTok{fill =}\NormalTok{ fill\_var) }\SpecialCharTok{+} 
+    \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{14}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{theme}\NormalTok{(}\AttributeTok{text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{family =} \StringTok{"serif"}\NormalTok{),}
+          \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{face =} \StringTok{"bold"}\NormalTok{),}
+          \AttributeTok{axis.title.y =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{)) }\SpecialCharTok{+}
+    \FunctionTok{scale\_y\_continuous}\NormalTok{(}\AttributeTok{labels =}\NormalTok{ scales}\SpecialCharTok{::}\NormalTok{comma, }\AttributeTok{expand =} \FunctionTok{expansion}\NormalTok{(}\AttributeTok{mult =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.1}\NormalTok{))) }\SpecialCharTok{+}
+    \FunctionTok{scale\_fill\_brewer}\NormalTok{(}\AttributeTok{palette =} \StringTok{"Dark2"}\NormalTok{)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{a.-most-popular-payment-modes}{%
+\section{a. Most Popular Payment
+Modes}\label{a.-most-popular-payment-modes}}
+
+This chart illustrates the breakdown of total sales by different payment
+modes. If some payment options significantly outperform others, it
+suggests customer preferences for convenience or security in
+transactions.
+
+Businesses can focus on offering seamless experiences for popular
+payment modes, while considering removing or rethinking less popular
+options. Additionally, promoting underused methods with incentives might
+increase usage.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{create\_stacked\_bar\_chart}\NormalTok{(popular\_payment\_modes, }\StringTok{"Payment\_Mode"}\NormalTok{, }\StringTok{"Payment\_Mode"}\NormalTok{, }\StringTok{"Most Popular Payment Modes"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
+## i Please use tidy evaluation idioms with `aes()`.
+## i See also `vignette("ggplot2-in-packages")` for more information.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.
+\end{verbatim}
+
+\includegraphics{Store-Sales_files/figure-latex/popular_payment-1.pdf}
+
+\hypertarget{b.-product-segments}{%
+\section{b. Product Segments}\label{b.-product-segments}}
+
+This chart shows the sales performance across different product
+segments. Some segments may dominate the sales, showing strong customer
+demand.
+
+The business should increase investment and promotions in segments with
+higher sales while investigating why certain segments underperform. For
+lower-performing segments, customer surveys or research might reveal how
+to enhance their appeal.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{create\_stacked\_bar\_chart}\NormalTok{(product\_segments, }\StringTok{"Segment"}\NormalTok{, }\StringTok{"Segment"}\NormalTok{, }\StringTok{"Product Segments"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/segment-1.pdf}
+
+\hypertarget{c.-categories}{%
+\section{c.~Categories}\label{c.-categories}}
+
+This stacked chart illustrates the sales contribution of various product
+categories, helping in the identification of high and low performers.
+
+The business can prioritize marketing and product development efforts in
+the most profitable categories. For the lower-selling categories, it
+might indicate a need for product line refreshes or discontinuation.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{create\_stacked\_bar\_chart}\NormalTok{(categories\_data, }\StringTok{"Category"}\NormalTok{, }\StringTok{"Category"}\NormalTok{, }\StringTok{"Categories"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/categories-1.pdf}
+
+\hypertarget{d.-delivery-type-by-region-of-order}{%
+\section{d.~Delivery Type by Region of
+Order}\label{d.-delivery-type-by-region-of-order}}
+
+This chart represents how different regions prefer shipment methods,
+revealing geographic preferences.
+
+The business can optimize its logistics strategies based on regional
+preferences, such as offering faster shipping options in regions that
+value speed or cheaper options where cost is more sensitive.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{create\_stacked\_bar\_chart}\NormalTok{(delivery\_type\_region, }\StringTok{"Ship\_Mode"}\NormalTok{, }\StringTok{"Region"}\NormalTok{, }\StringTok{"Delivery Type by Region of Order"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/delivery-1.pdf}
+
+\hypertarget{steps-for-improvement}{%
+\subsection{Steps for improvement}\label{steps-for-improvement}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# F. Create stacked chart for sales and profit analysis}
+\NormalTok{top\_sales\_profit\_payment\_modes }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Payment\_Mode) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total\_Sales =} \FunctionTok{sum}\NormalTok{(Sales), }\AttributeTok{Total\_Profit =} \FunctionTok{sum}\NormalTok{(Profit))}
+
+\NormalTok{customer\_segments\_data }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Segment) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total\_Sales =} \FunctionTok{sum}\NormalTok{(Sales), }\AttributeTok{Total\_Profit =} \FunctionTok{sum}\NormalTok{(Profit))}
+
+\NormalTok{product\_categories\_data }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Category) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total\_Sales =} \FunctionTok{sum}\NormalTok{(Sales), }\AttributeTok{Total\_Profit =} \FunctionTok{sum}\NormalTok{(Profit))}
+
+\NormalTok{shipping\_mode\_region\_data }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Ship\_Mode, Region) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total\_Sales =} \FunctionTok{sum}\NormalTok{(Sales), }\AttributeTok{Total\_Profit =} \FunctionTok{sum}\NormalTok{(Profit))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` has grouped output by 'Ship_Mode'. You can override using the
+## `.groups` argument.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{create\_stacked\_bar\_chart1 }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(data, x\_var, fill\_var, title) \{}
+  \FunctionTok{ggplot}\NormalTok{(data, }\FunctionTok{aes\_string}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x\_var, }\AttributeTok{y =} \StringTok{"Total\_Sales"}\NormalTok{, }\AttributeTok{fill =}\NormalTok{ fill\_var)) }\SpecialCharTok{+} 
+    \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{width =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+} 
+    \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =}\NormalTok{ title, }\AttributeTok{x =}\NormalTok{ x\_var, }\AttributeTok{fill =}\NormalTok{ fill\_var) }\SpecialCharTok{+} 
+    \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{14}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{theme}\NormalTok{(}\AttributeTok{text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{family =} \StringTok{"serif"}\NormalTok{),}
+          \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{face =} \StringTok{"bold"}\NormalTok{),}
+          \AttributeTok{axis.title.y =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{)) }\SpecialCharTok{+}
+    \FunctionTok{scale\_y\_continuous}\NormalTok{(}\AttributeTok{labels =}\NormalTok{ scales}\SpecialCharTok{::}\NormalTok{comma, }\AttributeTok{expand =} \FunctionTok{expansion}\NormalTok{(}\AttributeTok{mult =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.1}\NormalTok{))) }\SpecialCharTok{+}
+    \FunctionTok{scale\_fill\_gradient}\NormalTok{(}\AttributeTok{low =} \StringTok{"lightblue"}\NormalTok{, }\AttributeTok{high =} \StringTok{"darkblue"}\NormalTok{)  }\CommentTok{\# Use gradient for continuous values}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{a.-top-sales-and-profit-by-payment-modes}{%
+\section{a. Top Sales and Profit by Payment
+Modes}\label{a.-top-sales-and-profit-by-payment-modes}}
+
+Improving Sales: Introduce offers such as discounts or cashback for less
+popular payment methods to encourage more widespread use. Marketing
+Strategy: Highlight secure, easy-to-use payment modes in advertisements,
+particularly emphasizing mobile-friendly and fast checkout options.
+Cost-Cutting Steps: Reduce transaction fees by negotiating better rates
+with payment processors, particularly for less common payment methods.
+Improving Product Range: Align product promotions with specific payment
+methods, offering product bundles or exclusive deals for payments made
+through a specific mode.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{create\_stacked\_bar\_chart1}\NormalTok{(top\_sales\_profit\_payment\_modes, }\StringTok{"Payment\_Mode"}\NormalTok{, }\StringTok{"Total\_Sales"}\NormalTok{, }\StringTok{"Top Sales and Profit by Payment Modes"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/top_sales_profit-1.pdf}
+
+\hypertarget{b.-customer-segments}{%
+\section{b. Customer Segments}\label{b.-customer-segments}}
+
+Improving Sales: Tailor personalized offers and loyalty programs based
+on customer segments, especially for high-value consumers. Marketing
+Strategy: Create segment-specific campaigns focusing on corporate
+customers with bulk purchase incentives, and consumer segments with
+seasonal discounts. Cost-Cutting Steps: Streamline marketing efforts for
+underperforming segments, focusing more on profitable demographics.
+Improving Product Range: Expand the range of products based on the
+preferences of the top-performing customer segments, such as launching
+premium lines for corporate clients.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{create\_stacked\_bar\_chart1}\NormalTok{(customer\_segments\_data, }\StringTok{"Segment"}\NormalTok{, }\StringTok{"Total\_Sales"}\NormalTok{, }\StringTok{"Customer\_Segments"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/total_segments-1.pdf}
+
+\hypertarget{c.-product-categories}{%
+\section{c.~Product Categories}\label{c.-product-categories}}
+
+Improving Sales: Offer bundle deals or discounts on lower-performing
+categories to stimulate interest and clear excess stock. Marketing
+Strategy: Focus advertisements on high-performing categories, and create
+promotional campaigns to boost awareness and demand for less popular
+ones. Cost-Cutting Steps: Optimize inventory levels for categories with
+declining sales, reducing excess stock and associated carrying costs.
+Improving Product Range: Introduce complementary products or features to
+high-selling categories to capitalize on existing demand and upsell.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{create\_stacked\_bar\_chart1}\NormalTok{(product\_categories\_data, }\StringTok{"Category"}\NormalTok{, }\StringTok{"Total\_Sales"}\NormalTok{, }\StringTok{"Product\_Categories"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/unnamed-chunk-1-1.pdf}
+
+\hypertarget{d.-shipping-mode-by-regions}{%
+\section{d.~Shipping Mode by
+Regions}\label{d.-shipping-mode-by-regions}}
+
+Improving Sales: Offer region-specific promotions, such as free shipping
+or faster delivery in high-demand areas. Marketing Strategy: Emphasize
+the advantages of different shipping options in marketing campaigns
+(e.g., faster deliveries in urban areas). Cost-Cutting Steps: Implement
+more efficient shipping logistics for regions that show a preference for
+certain delivery modes, reducing costs associated with expedited
+shipping. Improving Product Range: Consider offering region-specific
+products based on shipping preferences, especially where shipping
+logistics play a big role in customer satisfaction.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{create\_stacked\_bar\_chart}\NormalTok{(shipping\_mode\_region\_data, }\StringTok{"Ship\_Mode"}\NormalTok{, }\StringTok{"Region"}\NormalTok{, }\StringTok{"Shipping Mode by Regions of Order"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/unnamed-chunk-2-1.pdf}
+
+\hypertarget{map-depicting-the-profit-generating-states}{%
+\subsection{Map depicting the Profit generating
+States}\label{map-depicting-the-profit-generating-states}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{profit\_by\_state }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(State) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total\_Profit =} \FunctionTok{sum}\NormalTok{(Profit, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
+
+\CommentTok{\# Get US state map data}
+\NormalTok{us\_states }\OtherTok{\textless{}{-}} \FunctionTok{map\_data}\NormalTok{(}\StringTok{"state"}\NormalTok{)}
+
+\CommentTok{\# Merge the state map data with profit data}
+\CommentTok{\# Convert state names in both datasets to lowercase for matching}
+\NormalTok{profit\_by\_state}\SpecialCharTok{$}\NormalTok{State }\OtherTok{\textless{}{-}} \FunctionTok{tolower}\NormalTok{(profit\_by\_state}\SpecialCharTok{$}\NormalTok{State)}
+\NormalTok{us\_states}\SpecialCharTok{$}\NormalTok{region }\OtherTok{\textless{}{-}} \FunctionTok{tolower}\NormalTok{(us\_states}\SpecialCharTok{$}\NormalTok{region)}
+
+\CommentTok{\# Merge map data with profit data}
+\NormalTok{map\_data }\OtherTok{\textless{}{-}} \FunctionTok{merge}\NormalTok{(us\_states, profit\_by\_state, }\AttributeTok{by.x =} \StringTok{"region"}\NormalTok{, }\AttributeTok{by.y =} \StringTok{"State"}\NormalTok{, }\AttributeTok{all.x =} \ConstantTok{TRUE}\NormalTok{)}
+
+\CommentTok{\# Create a map with profit levels}
+\FunctionTok{ggplot}\NormalTok{(map\_data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ long, }\AttributeTok{y =}\NormalTok{ lat, }\AttributeTok{group =}\NormalTok{ group, }\AttributeTok{fill =}\NormalTok{ Total\_Profit)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_polygon}\NormalTok{(}\AttributeTok{color =} \StringTok{"white"}\NormalTok{, }\AttributeTok{size =} \FloatTok{0.2}\NormalTok{) }\SpecialCharTok{+}  \CommentTok{\# Thinner borders for better clarity}
+  \FunctionTok{scale\_fill\_gradient}\NormalTok{(}\AttributeTok{low =} \StringTok{"lightyellow"}\NormalTok{, }\AttributeTok{high =} \StringTok{"darkred"}\NormalTok{, }\AttributeTok{na.value =} \StringTok{"gray90"}\NormalTok{, }\AttributeTok{name =} \StringTok{"Profit"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{coord\_fixed}\NormalTok{(}\FloatTok{1.3}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Profit by States"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_void}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{family =} \StringTok{"serif"}\NormalTok{),}
+        \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{size =} \DecValTok{18}\NormalTok{, }\AttributeTok{face =} \StringTok{"bold"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\AttributeTok{data =}\NormalTok{ map\_data }\SpecialCharTok{\%\textgreater{}\%}
+              \FunctionTok{group\_by}\NormalTok{(region) }\SpecialCharTok{\%\textgreater{}\%}
+              \FunctionTok{summarise}\NormalTok{(}\AttributeTok{long =} \FunctionTok{mean}\NormalTok{(long), }\AttributeTok{lat =} \FunctionTok{mean}\NormalTok{(lat)),}
+            \FunctionTok{aes}\NormalTok{(}\AttributeTok{label =}\NormalTok{ region, }\AttributeTok{x =}\NormalTok{ long, }\AttributeTok{y =}\NormalTok{ lat), }\AttributeTok{size =} \DecValTok{2}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{inherit.aes =} \ConstantTok{FALSE}\NormalTok{)  }\CommentTok{\# Add state names}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+## i Please use `linewidth` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.
+\end{verbatim}
+
+\includegraphics{Store-Sales_files/figure-latex/profit_map-1.pdf}
+
+\hypertarget{ways-to-increase-customer-retention-and-customer-loyalty}{%
+\subsection{Ways to increase Customer Retention and Customer
+Loyalty}\label{ways-to-increase-customer-retention-and-customer-loyalty}}
+
+Personalized Communication: Send personalized email campaigns or push
+notifications based on customer preferences, previous orders, and
+purchase frequency. Loyalty Programs: Implement a tiered loyalty program
+where returning customers earn points for purchases, encouraging repeat
+business. Offer rewards like discounts, exclusive access to new
+products, or free shipping. Customer Feedback: Regularly collect and
+analyze customer feedback, offering improvements based on this data to
+ensure a more personalized shopping experience. Post-Purchase Support:
+Provide exceptional post-purchase support, such as easy returns, fast
+complaint resolution, and follow-ups to ensure customer satisfaction.
+Exclusive Offers: Provide exclusive deals and early access to sales for
+loyal customers to make them feel valued.
+
+\hypertarget{top-customers-by-sales}{%
+\subsection{Top customers by sales}\label{top-customers-by-sales}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Top 10 Customers by Sales}
+\NormalTok{top\_customers\_by\_sales }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Customer\_Name) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total\_Sales =} \FunctionTok{sum}\NormalTok{(Sales, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(}\FunctionTok{desc}\NormalTok{(Total\_Sales)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{top\_n}\NormalTok{(}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Selecting by Total_Sales
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Plotting Top 10 Customers by Sales}
+\FunctionTok{ggplot}\NormalTok{(top\_customers\_by\_sales, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \FunctionTok{reorder}\NormalTok{(Customer\_Name, Total\_Sales), }\AttributeTok{y =}\NormalTok{ Total\_Sales)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_col}\NormalTok{(}\AttributeTok{fill =} \StringTok{"steelblue"}\NormalTok{, }\AttributeTok{width =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{coord\_flip}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Top 10 Customers by Sales"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Customer Name"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Total Sales"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{14}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{family =} \StringTok{"serif"}\NormalTok{),}
+        \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{size =} \DecValTok{16}\NormalTok{, }\AttributeTok{face =} \StringTok{"bold"}\NormalTok{),}
+        \AttributeTok{axis.title.y =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/top_customers-1.pdf}
+
+\hypertarget{top-profit-cities}{%
+\subsection{Top profit cities}\label{top-profit-cities}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Top 10 Cities by Profit and Sales}
+\NormalTok{top\_cities\_by\_profit\_sales }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(City) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total\_Sales =} \FunctionTok{sum}\NormalTok{(Sales, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\AttributeTok{Total\_Profit =} \FunctionTok{sum}\NormalTok{(Profit, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(}\FunctionTok{desc}\NormalTok{(Total\_Sales)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{top\_n}\NormalTok{(}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Selecting by Total_Profit
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Plotting Top 10 Cities by Profit and Sales}
+\FunctionTok{ggplot}\NormalTok{(top\_cities\_by\_profit\_sales, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \FunctionTok{reorder}\NormalTok{(City, Total\_Sales), }\AttributeTok{y =}\NormalTok{ Total\_Sales, }\AttributeTok{fill =}\NormalTok{ Total\_Profit)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_col}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{coord\_flip}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Top 10 Cities by Profit and Sales"}\NormalTok{, }\AttributeTok{x =} \StringTok{"City"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Total Sales"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_gradient}\NormalTok{(}\AttributeTok{low =} \StringTok{"yellow"}\NormalTok{, }\AttributeTok{high =} \StringTok{"red"}\NormalTok{, }\AttributeTok{name =} \StringTok{"Profit"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/cities-1.pdf}
+
+\hypertarget{top-profit-making-categories-and-sub-categories}{%
+\subsection{Top profit making categories and
+sub-categories}\label{top-profit-making-categories-and-sub-categories}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Top 10 Profit{-}Making Categories and Sub{-}Categories}
+\NormalTok{top\_profit\_categories\_subcategories }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Category, Sub\_Category) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total\_Profit =} \FunctionTok{sum}\NormalTok{(Profit, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(}\FunctionTok{desc}\NormalTok{(Total\_Profit)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{top\_n}\NormalTok{(}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` has grouped output by 'Category'. You can override using the
+## `.groups` argument.
+## Selecting by Total_Profit
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Plotting Top 10 Profit{-}Making Categories and Sub{-}Categories}
+\FunctionTok{ggplot}\NormalTok{(top\_profit\_categories\_subcategories, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \FunctionTok{reorder}\NormalTok{(Sub\_Category, Total\_Profit), }\AttributeTok{y =}\NormalTok{ Total\_Profit, }\AttributeTok{fill =}\NormalTok{ Category)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_col}\NormalTok{(}\AttributeTok{width =} \FloatTok{0.6}\NormalTok{, }\AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{coord\_flip}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Top 10 Profit{-}Making Categories and Sub{-}Categories"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Sub{-}Category"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Total Profit"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{14}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{family =} \StringTok{"serif"}\NormalTok{),}
+        \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{size =} \DecValTok{16}\NormalTok{, }\AttributeTok{face =} \StringTok{"bold"}\NormalTok{),}
+        \AttributeTok{axis.title.y =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_brewer}\NormalTok{(}\AttributeTok{palette =} \StringTok{"Set2"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/top_categories-1.pdf}
+
+\hypertarget{category-wise-returns-by-the-customer}{%
+\subsection{Category wise returns by the
+customer}\label{category-wise-returns-by-the-customer}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Number of Category{-}Wise Returns}
+\NormalTok{category\_wise\_returns }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(Returns }\SpecialCharTok{==} \StringTok{"Yes"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Category) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Num\_Returns =} \FunctionTok{n}\NormalTok{())}
+
+\CommentTok{\# Plotting Number of Category{-}Wise Returns}
+\FunctionTok{ggplot}\NormalTok{(category\_wise\_returns, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =} \FunctionTok{reorder}\NormalTok{(Category, Num\_Returns), }\AttributeTok{y =}\NormalTok{ Num\_Returns, }\AttributeTok{fill =}\NormalTok{ Category)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_col}\NormalTok{(}\AttributeTok{color =} \StringTok{"black"}\NormalTok{, }\AttributeTok{width =} \FloatTok{0.8}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Number of Category{-}Wise Returns"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Category"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Number of Returns"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{(}\AttributeTok{base\_size =} \DecValTok{10}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{family =} \StringTok{"serif"}\NormalTok{),}
+        \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{size =} \DecValTok{16}\NormalTok{, }\AttributeTok{face =} \StringTok{"bold"}\NormalTok{),}
+        \AttributeTok{axis.title.y =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{face =} \StringTok{"bold"}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_brewer}\NormalTok{(}\AttributeTok{palette =} \StringTok{"Set1"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Store-Sales_files/figure-latex/returns-1.pdf}
+
+\hypertarget{conclusion}{%
+\subsection{Conclusion}\label{conclusion}}
+
+The dataset reveals crucial insights into sales performance across
+various product categories, customer segments, payment modes, and
+regions. By understanding these patterns, the company can take targeted
+actions to boost revenue, such as optimizing inventory, tailoring
+marketing strategies, and offering improved delivery options. While
+certain regions and segments drive most of the sales, there are
+opportunities for growth in underperforming areas. Additionally,
+expanding popular product lines and enhancing the customer experience
+through preferred payment methods and shipping options will help
+maintain competitiveness. Strategic initiatives such as personalized
+offers and loyalty programs can further increase customer retention and
+loyalty, leading to sustainable business growth.
+
+\end{document}

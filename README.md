@@ -5,3 +5,5 @@ Presented in the form of R scripts and R Markdown Files.
 ## Contents
 - Customer Churn Analysis
 - Violence on Women - Analysis and Modelling
+- Retail Store - Inventory Analysis
+- Store Sales - EDA and Visualization

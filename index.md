@@ -26,7 +26,7 @@
 
 ---
 
-### Sales Prediction - Forecasting
+### Sales Forecast Prediction
 
 <a href = "https://github.com/Abhijith-Upadhya/abhijith-upadhya.github.io/tree/main/Sales%20Prediction" target = "_blank"><img src="http://hptpedia.hyper-trade.com/content/images/2023/08/Sales-forecast.jpg"/></a>
 

@@ -1,11 +1,11 @@
-title: John Doe # your name (or website title) here
+title: Abhijith R Upadhya # your name (or website title) here
 logo: "/images/logo.png?raw=true" # your photo (or logo) here
 description: > # your text below (remove <br> elements if you don't need line breaks)
-  First description 
-  <br><br>
-  Second description 
-  <br><br>
-  <a href="https://www.linkedin.com/in/example/">View My LinkedIn Profile</a> 
+  Business Analyst | Business Development | Software Engineer
+  <a href="abhijith.upadhya27@gmail.com">abhijith.upadhya27@gmail.com</a> 
+  <a href="https://www.linkedin.com/in/abhijithupadhya/">View My LinkedIn Profile</a> 
+
+  
   
 remote_theme: pages-themes/minimal@v0.2.0
 plugins:

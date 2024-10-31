@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = TRUE)
 ```
 
-## **Store Sales - EDA and Visualization**
+# **Store Sales - EDA and Visualization**
 
 ![Source: Yourretailcoach.in](https://www.yourretailcoach.in/wp-content/uploads/2020/07/How-to-increase-retail-sales@2x-1080x675.png){height=600}
 

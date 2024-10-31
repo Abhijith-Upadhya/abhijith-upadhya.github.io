@@ -1,0 +1,348 @@
+---
+title: "Retail Store Inventory Analysis"
+author: "Abhijith"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = TRUE)
+```
+
+![Source: Inventory Analysis.](https://bizom.com/wp-content/uploads/2023/04/Unlocking-the-Benefits-of-Inventory-Management-Software-blog-banner-image.jpg)
+
+```{r packages_libraries, include=FALSE}
+library(flexdashboard)
+library(fontawesome)
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(lubridate)
+library(reshape2)
+library(gridExtra)
+library(caret)
+library(tidyverse)
+library(tidyr)
+library(stats)
+library(DT)
+```
+
+## Loading the dataset
+
+### Descriptive Statistics
+Data Summary: Descriptive statistics for Units_sold, Price, and Revenue give an overview of central tendencies and variability. This basic step is essential to understand the spread and range of key metrics.
+
+``` {r load_dataset}
+# Read the CSV file
+data <- read_csv("retail_store.csv")
+
+# Convert 'Date' column to Date and extract the 'Year'
+data$Date <- as.Date(data$Date)
+data$Year <- year(data$Date)
+#data$Year
+# Add 'Revenue' column
+data$Revenue <- data$Units_sold * data$Price
+# Filter out rows where 'Price' and 'Units_sold' are not 0
+df <- data %>% filter(Price != 0, Units_sold != 0)
+
+# Data info
+str(data)
+
+options(repr.plot.width = 10, repr.plot.height = 4)
+# Descriptive statistics for 'Units_sold', 'Price', and 'Revenue'
+summary(data[, c("Units_sold", "Price", "Revenue")])
+```
+
+## Visualizations and Analysis
+
+### Time Series Analysis
+
+Price Over Time: A line plot shows how the Price of products changes over time. Any trends, seasonal patterns, or sudden price spikes or drops are easily visible here.
+
+``` {r priceovertime}
+# Visualization - Price over time
+ggplot(df, aes(x = Date, y = Price)) +
+    geom_line() +
+    ggtitle("Price over time") +
+    theme_minimal() 
+```
+
+Sales in Units Over Time: A line plot of Units_sold over time shows fluctuations in demand, helping identify peak sales periods and slower months.
+
+```{r salesovertime}
+# Visualization - Sales in Units over time
+ggplot(df, aes(x = Date, y = Units_sold)) +
+  geom_line() +
+  ggtitle("Sales in Units") +
+  theme_minimal()
+```
+
+Sales Revenue Over Time: Revenue over time helps to pinpoint high-revenue periods and indicates possible trends in sales volume combined with pricing.
+
+```{r  salesrevenueovertime}
+# Visualization - Sales Revenues over time
+ggplot(df, aes(x = Date, y = Revenue)) +
+  geom_line() +
+  ggtitle("Sales Revenues") +
+  theme_minimal()
+```
+
+### Density Analysis
+
+Density Plots:
+Price, Stock, Units_sold, and Revenue densities give insights into the distributions of these metrics. For example, if Price density is skewed right, it implies most prices are on the lower end, with a few higher-priced outliers.
+
+```{r densityplots}
+# Density Plots
+ggplot(df, aes(x = Price)) +
+  geom_density() +
+  ggtitle("Price Density") +
+  theme_minimal()
+
+ggplot(df, aes(x = Stock)) +
+  geom_density() +
+  ggtitle("Stock Density") +
+  theme_minimal()
+
+ggplot(df, aes(x = Units_sold)) +
+  geom_density() +
+  ggtitle("Sales Density") +
+  theme_minimal()
+
+ggplot(df, aes(x = Revenue)) +
+  geom_density() +
+  ggtitle("Revenues Density") +
+  theme_minimal()
+```
+
+### Sales and Revenue by Year
+
+Scatter Plot - Revenue vs. Sales by Year: This plot shows how revenues correspond to unit sales, color-coded by year, revealing relationships between these metrics. The scatter pattern can indicate if certain years experienced higher variability or concentration.
+
+``` {r revenuescatterplot}
+ggplot(df, aes(x = Units_sold, y = Revenue, color = as.factor(Year))) +
+  geom_point() +
+  ggtitle("Revenues vs Sales by Year") +
+  theme_minimal()
+```
+
+
+```{r revenueline}
+ggplot(df, aes(x = Units_sold, y = Revenue, color = as.factor(Year))) +
+  geom_smooth(method = "lm") +
+  ggtitle("Revenues vs Sales by Year") +
+  theme_minimal()
+```
+
+Boxplot - Sales Variability by Year: This boxplot shows sales spread across different years, illustrating any significant year-to-year variability in sales volume.
+
+```{r salesboxplot}
+# Boxplot - Sales variability compared by year
+ggplot(df, aes(x = as.factor(Year), y = Units_sold)) +
+  geom_boxplot() +
+  ggtitle("Sales Variability by Year") +
+  theme_minimal()
+```
+
+KDE Plot - Sales Variability by Year: KDEs further reveal year-based sales trends, highlighting periods of higher or lower sales density.
+
+```{r kdeplot}
+# KDE Plot - Sales variability compared by year
+ggplot(df, aes(x = Units_sold, color = as.factor(Year))) +
+  geom_density() +
+  ggtitle("Sales Variability by Year") +
+  theme_minimal()
+```
+
+Sales vs Price: A scatter plot with a linear model (regression) visualizes the relationship between price and units sold, potentially revealing elasticity (sensitivity to price changes) by year.
+
+```{r salesvariability}
+# Analyzing Sales Variability by Price
+ggplot(df, aes(x = Price, y = Units_sold, color = as.factor(Year))) +
+  geom_smooth(method = "lm") +
+  ggtitle("Sales Variability by Price") +
+  theme_minimal()
+```
+
+### Stock Analysis
+
+Stock Analysis Over Time: Tracking stock over time helps assess if there are predictable cycles in stock replenishment and consumption.
+
+```{r stockanalysis}
+# Stock Analysis over Time
+ggplot(df, aes(x = Date, y = Stock)) +
+  geom_line() +
+  ggtitle("Stock Analysis Over Time") +
+  theme_minimal()
+```
+
+Stock Density by Year: Density plots of stock can highlight if there are periods with higher or lower stock, possibly indicating seasonal inventory management.
+
+```{r stockdensitybyyear}
+# Stock Density by Year
+ggplot(df, aes(x = Stock, color = as.factor(Year))) +
+  geom_density() +
+  ggtitle("Stock Density by Year") +
+  theme_minimal()
+```
+
+Sales vs Stock by Year: This regression model on sales vs. stock shows if stock levels impact sales, which may reflect supply limitations or overstocking.
+
+```{r salesvsstockbyyear}
+# Linear Model - Sales vs Stock by year
+ggplot(df, aes(x = Units_sold, y = Stock, color = as.factor(Year))) +
+  geom_smooth(method = "lm") +
+  ggtitle("Sales vs Stock by Year") +
+  theme_minimal()
+```
+
+### Price and Sales Analysis
+
+Sales by Rounded Price: A boxplot analysis with rounded prices reveals how units sold vary at specific price points.
+
+```{r priceroundcode, include = FALSE}
+# Rounded Price and Boxplot
+df$price_round <- round(df$Price, 1)
+```
+
+```{r salesbyroundedprice}
+ggplot(df, aes(x = as.factor(price_round), y = Units_sold)) +
+  geom_boxplot() +
+  ggtitle("Sales by Rounded Price") +
+  theme_minimal()
+```
+
+Sales vs Stock by Rounded Price: This joint plot shows the relationship between rounded prices and stock in relation to units sold, providing insight into how price points influence inventory management.
+
+```{r salesstockroundedprice}
+# Joint Plot - Sales vs Stock by Rounded Price
+ggplot(df, aes(x = Units_sold, y = Stock, color = as.factor(price_round))) +
+  geom_point() +
+  ggtitle("Sales vs Stock by Rounded Price") +
+  theme_minimal()
+```
+
+### Economic Elasticity Analysis
+
+Elasticity of Demand: A scatter plot of price changes (Price_delta) vs. sales changes (Units_sold_delta) categorized by Revenue_delta helps visualize demand elasticity (how sensitive sales are to price changes). Density plots for elasticity reveal the distribution, which aids in determining if demand is generally elastic or inelastic.
+
+```{r elasticity, include= FALSE}
+# Create Economic Analysis dataframe
+eco <- df %>% select(Date, Stock, Price, Units_sold, Revenue, Year)
+
+# Calculate correlations
+cor(eco %>% select(-Date))
+
+# Calculate percent change for Stock, Price, Units_sold, and Revenue
+eco <- eco %>%
+  mutate(Stock_delta = (Stock - lag(Stock)) / lag(Stock),
+         Price_delta = (Price - lag(Price)) / lag(Price),
+         Units_sold_delta = (Units_sold - lag(Units_sold)) / lag(Units_sold),
+         Revenue_delta = (Revenue - lag(Revenue)) / lag(Revenue)) %>%
+  drop_na()  # Removing the first row with NAs
+
+# Price frame where Price_delta is not zero
+pf <- eco %>% filter(Price_delta != 0)
+
+# Calculate elasticity
+pf <- pf %>% mutate(elasticity = Units_sold_delta / Price_delta)
+```
+
+```{r show}
+ggplot(pf %>% filter(Price_delta < 0.75 & Units_sold_delta < 10), aes(x = Price_delta, y = Units_sold_delta, color = Revenue_delta)) +
+  geom_point() +
+  theme_minimal() +
+  ggtitle("Price Delta vs Sales Delta")
+
+ggplot(pf %>% filter(Units_sold_delta < 7), aes(x = Units_sold_delta, y = Revenue_delta)) +
+  geom_point() +
+  theme_minimal() +
+  ggtitle("Sales Delta vs Revenue Delta")
+```
+
+```{r correlation, include=FALSE}
+# Correlation for the entire dataset
+cor(df %>% select(-Date))
+
+# Boxplot of elasticity (elasticity range between -10 and 10)
+ggplot(pf %>% filter(elasticity > -10 & elasticity < 10), aes(x = factor(Price), y = elasticity)) +
+  geom_boxplot() +
+  theme_minimal() +
+  ggtitle("Boxplot of Elasticity by Price")
+
+# Scatterplot with Linear Model (Price vs Sales by Year)
+ggplot(df, aes(x = Price, y = Units_sold, color = as.factor(Year))) +
+  geom_smooth(method = "lm") +
+  theme_minimal() +
+  ggtitle("Price vs Sales by Year")
+
+# KDE Plot for Elasticity
+ggplot(pf, aes(x = elasticity)) +
+  geom_density() +
+  theme_minimal() +
+  ggtitle("Density of Elasticity")
+
+# Define classify_elasticity function
+classify_elasticity <- function(coef) {
+  coef <- round(coef, 2)
+  if (coef < -100) {
+    return("high_elastic_N")
+  } else if (coef < -1) {
+    return("elastic_N")
+  } else if (coef < 0) {
+    return("inelastic_N")
+  } else if (coef < 1) {
+    return("inelastic_P")
+  } else if (coef > 1) {
+    return("elastic_P")
+  } else {
+    return("high_elastic_P")
+  }
+}
+
+# Apply classification function to elasticity and create a new column
+pf <- pf %>% mutate(elastic_class = sapply(elasticity, classify_elasticity))
+
+# Scatter plot classified by elasticity class
+ggplot(pf %>% filter(Units_sold_delta < 10 & Units_sold_delta > -2), aes(x = Price_delta, y = Units_sold_delta, color = elastic_class)) +
+  geom_point() +
+  theme_minimal() +
+  ggtitle("Price Delta vs Sales Delta Classified by Elasticity")
+
+```
+
+Elasticity Classification: By classifying elasticity into categories, this analysis allows for better understanding of price sensitivity. Plots based on elastic_class (e.g., inelastic, elastic) demonstrate which price changes strongly impact sales.
+
+## Regression and ANOVA Models
+
+Regression Analysis - Units Sold: A linear regression model predicts Units_sold based on Price and Stock, giving insights into how these factors contribute to sales volume.
+
+```{r reganalysisunitssold}
+# Linear regression model for 'Units_sold' as a function of 'Price' and 'Stock'
+model1 <- lm(Units_sold ~ Price + Stock, data = df)
+summary(model1)
+
+# ANOVA for the model
+anova(model1)
+```
+
+Regression Analysis - Revenue: Another linear model assesses Revenue as a function of Units_sold, quantifying the impact of unit sales on revenue.
+
+```{r reganalysisrevenue }
+# Linear regression model for 'Revenue' as a function of 'Units_sold'
+model2 <- lm(Revenue ~ Units_sold, data = df)
+summary(model2)
+```
+
+## Conclusion
+
+### The study highlights several insights into the retail store’s data:
+
+Demand Patterns: Sales volume shows variability across years, with certain price points and times of year generating higher sales. Seasonal trends are likely at play, as seen in sales and revenue peaks.
+Elasticity: The elasticity analysis shows demand’s responsiveness to price changes. Classification into elastic, inelastic, and highly elastic categories enables targeted price-setting strategies, particularly during peak demand periods.
+
+Price-Sales Relationship: Sales are influenced by both price and stock levels, indicating that both demand-side (price sensitivity) and supply-side (stock availability) dynamics are important for optimal inventory management.
+
+Sales Prediction: The regression model for Units_sold suggests that Price and Stock are significant predictors of demand, providing a useful tool for forecasting. This is further validated by the ANOVA results, which confirm the model’s effectiveness.
+
+Overall, the analysis provides actionable insights for pricing, inventory management, and revenue optimization strategies. By identifying elastic products and adjusting prices accordingly, the store can maximize revenue and reduce stock issues.

@@ -1,0 +1,171 @@
+---
+title: "Retail Store"
+output: flexdashboard::flex_dashboard
+runtime: shiny
+---
+
+```{r packages_libraries, include=FALSE}
+library(flexdashboard)
+library(fontawesome)
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(lubridate)
+library(reshape2)
+library(gridExtra)
+library(caret)
+library(tidyverse)
+library(tidyr)
+library(stats)
+library(DT)
+```
+
+
+
+Introduction
+=====================================     
+   
+Column {data-width=500}
+-------------------------------------
+
+### Data Table
+    
+```{r view_data}
+renderDT(data, extensions = c('Buttons'), options = list(
+  dom = c('Bfrtip'),
+  buttons = c('csv', 'excel'),
+  pageLength = 18,
+  lengthMenu = c(5, 10, 15, 20)
+))
+```
+
+Column {data-width=500}
+-------------------------------------
+   
+### Code
+
+``` {r source_code, warning = FALSE, include = TRUE, echo = TRUE}
+# Read the CSV file
+data <- read_csv("retail_store.csv")
+
+# Convert 'Date' column to Date and extract the 'Year'
+data$Date <- as.Date(data$Date)
+data$Year <- year(data$Date)
+data$Year
+# Add 'Revenue' column
+data$Revenue <- data$Units_sold * data$Price
+# Filter out rows where 'Price' and 'Units_sold' are not 0
+df <- data %>% filter(Price != 0, Units_sold != 0)
+# Data info
+str(data)
+# Descriptive statistics for 'Units_sold', 'Price', and 'Revenue'
+summary(data[, c("Units_sold", "Price", "Revenue")])
+options(repr.plot.width = 13, repr.plot.height = 6)
+
+# Visualization - Price over time
+ggplot(df, aes(x = Date, y = Price)) +
+    geom_line() +
+    ggtitle("Price over time") +
+    theme_minimal() 
+
+# Visualization - Sales in Units over time
+ggplot(df, aes(x = Date, y = Units_sold)) +
+  geom_line() +
+  ggtitle("Sales in Units") +
+  theme_minimal()
+
+# Visualization - Sales Revenues over time
+ggplot(df, aes(x = Date, y = Revenue)) +
+  geom_line() +
+  ggtitle("Sales Revenues") +
+  theme_minimal()
+
+# Density Plots
+ggplot(df, aes(x = Price)) +
+  geom_density() +
+  ggtitle("Price Density") +
+  theme_minimal()
+
+ggplot(df, aes(x = Stock)) +
+  geom_density() +
+  ggtitle("Stock Density") +
+  theme_minimal()
+
+ggplot(df, aes(x = Units_sold)) +
+  geom_density() +
+  ggtitle("Sales Density") +
+  theme_minimal()
+
+ggplot(df, aes(x = Revenue)) +
+  geom_density() +
+  ggtitle("Revenues Density") +
+  theme_minimal()
+
+```  
+    
+
+Graphical Analysis
+=====================================  
+    
+Column {data-width=500}
+-------------------------------------
+    
+### Data Table
+    
+```{r}
+
+```
+   
+Column {data-width=500}
+-------------------------------------
+   
+### Visualization depicting of Price over Time
+
+```{r,fig.width = 18, fig.height= 5}
+ggplot(df, aes(x = Date, y = Price)) +
+  geom_line() +
+  ggtitle("Price over time") +
+  theme_minimal()
+```   
+ 
+### Graph depicting Sales in Units over Time
+    
+```{r,fig.width = 18, fig.height= 5}
+ggplot(df, aes(x = Date, y = Units_sold)) +
+  geom_line() +
+  ggtitle("Sales in Units") +
+  theme_minimal()
+```
+
+### Graph depicting Revenue from Sales over Time
+
+```{r,fig.width = 18, fig.height= 5}
+ggplot(df, aes(x = Date, y = Revenue)) +
+  geom_line() +
+  ggtitle("Sales Revenues") +
+  theme_minimal()
+```
+
+Page 2 {data-orientation=rows}
+=====================================     
+   
+Row {data-height=600}
+-------------------------------------
+
+### Chart 1
+
+```{r}
+```
+
+Row {data-height=400}
+-------------------------------------
+   
+### Chart 2
+
+```{r}
+```   
+    
+### Chart 3
+
+```{r}
+```

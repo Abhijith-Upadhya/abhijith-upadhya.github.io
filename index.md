@@ -16,6 +16,18 @@
 
 ### Retail Store - Inventory Analysis
 
-<a href = "" target = "_blank"><img src="https://bizom.com/wp-content/uploads/2023/04/Unlocking-the-Benefits-of-Inventory-Management-Software-blog-banner-image.jpg"/></a>
+<a href = "https://github.com/Abhijith-Upadhya/abhijith-upadhya.github.io/tree/main/Retail%20Store" target = "_blank"><img src="https://bizom.com/wp-content/uploads/2023/04/Unlocking-the-Benefits-of-Inventory-Management-Software-blog-banner-image.jpg"/></a>
+
+---
+
+### Store Sales - EDA and Analysis
+
+<a href = "" target = "_blank"><img src="https://www.yourretailcoach.in/wp-content/uploads/2020/07/How-to-increase-retail-sales@2x-1080x675.png"/></a>
+
+---
+
+### Retail Store - Inventory Analysis
+
+<a href = "" target = "_blank"><img src=""/></a>
 
 ---

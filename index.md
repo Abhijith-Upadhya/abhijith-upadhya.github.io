@@ -2,10 +2,9 @@
 
 ---
 
-### 
+### Customer Churn
 
-[Customer Churn](/sample_page)
-<img src="images/dummy_thumbnail.jpg?raw=true"/>
+<img src="images/dummy_thumbnail.jpg?raw=true">[Customer Churn](/sample_page)</img>
 
 ---
 [Project 2 Title](/pdf/sample_presentation.pdf)

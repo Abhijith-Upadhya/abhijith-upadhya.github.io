@@ -28,6 +28,6 @@
 
 ### Retail Store - Inventory Analysis
 
-<a href = "" target = "_blank"><img src=""/></a>
+<a href = "https://github.com/Abhijith-Upadhya/abhijith-upadhya.github.io/tree/main/Sales%20Prediction" target = "_blank"><img src=""/></a>
 
 ---

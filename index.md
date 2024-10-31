@@ -4,7 +4,7 @@
 
 ### Customer Churn Analysis
 
-<a href="https://github.com/Abhijith-Upadhya/abhijith-upadhya.github.io/tree/main/Customer%20Churn"><img src="[https://chargezoom.com/hubfs/Imported_Blog_Media/churn.png](https://www.voxco.com/wp-content/uploads/2021/09/Everything-you-need-to-know-about-Customer-Churn2.jpg)"/></a>
+<a href = "https://github.com/Abhijith-Upadhya/abhijith-upadhya.github.io/tree/main/Customer%20Churn" target = "_blank"><img src="https://www.voxco.com/wp-content/uploads/2021/09/Everything-you-need-to-know-about-Customer-Churn2.jpg"/></a>
 
 ---
 

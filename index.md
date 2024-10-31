@@ -4,7 +4,7 @@
 
 ### Customer Churn
 
-<img src="images/dummy_thumbnail.jpg?raw=true">[Customer Churn](/sample_page)</img>
+<img src="images/dummy_thumbnail.jpg?raw=true">[](/sample_page)</img>
 
 ---
 [Project 2 Title](/pdf/sample_presentation.pdf)

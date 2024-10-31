@@ -1,5 +1,5 @@
 ---
-title: "StoreSales"
+title: ""
 author: "Abhijith Upadhya"
 date: "`r Sys.Date()`"
 output: html_document
@@ -8,6 +8,10 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
+
+# **Sales - Trend Analysis and Visualization**
+
+![Source: a.storyblok.com.](https://a.storyblok.com/f/64010/1200x630/2dc4d294cf/retaildataanalytics4.png)
 
 ## Introduction
 

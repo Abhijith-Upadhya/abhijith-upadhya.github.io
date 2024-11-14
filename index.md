@@ -22,7 +22,8 @@
 
 ### Ski Resorts - Data Visualization
 
-<a href = "https://github.com/Abhijith-Upadhya/abhijith-upadhya.github.io/tree/main/Ski_resort" target = "_blank"><img src=" "/></a>
+<a href = "https://github.com/Abhijith-Upadhya/abhijith-upadhya.github.io/tree/main/Ski_resort" target = "_blank"><img src="https://www.skisolutions.com/app/uploads/2023/05/ski-resorts.jpg"/></a>
+
 ---
 
 ## Store Sales - EDA and Analysis

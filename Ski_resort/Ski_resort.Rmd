@@ -1,0 +1,434 @@
+---
+title: ""
+author: "Abhijith"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+# **Ski Resorts - EDA and Visualization**
+
+![Source: Skisolutions.com.](https://www.skisolutions.com/app/uploads/2023/05/ski-resorts.jpg)
+
+## 1. Introduction
+
+This report provides an in-depth analysis of ski resorts worldwide. By examining various characteristics—such as the longest ski runs, lift capacities, and child-friendly amenities—we aim to highlight factors important for different types of skiers. Additionally, we analyze resorts with specific features like summer skiing and night skiing, with a focus on European resorts.
+
+
+## 2. Loading Dataset
+
+We start by loading and preparing the data for analysis, removing missing values and converting data types as necessary. Additionally, we cluster resorts based on geographical location and characteristics like elevation change, lift capacity, and total slopes.
+
+```{r setup1, message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(lubridate)
+library(leaflet)
+library(cluster)
+library(tidyverse)
+
+# Load the data
+resorts <- read_csv("resorts.csv")
+snow <- read_csv("snow.csv")
+```
+
+## 3. Data Exploration
+
+```{r data_exp}
+# Clean `resorts` data
+resorts <- resorts %>%
+  mutate(
+    Price = as.numeric(Price),
+    Season = as.factor(Season),
+    Child_friendly = as.logical(Child_friendly),
+    Snowparks = as.logical(Snowparks),
+    Nightskiing = as.logical(Nightskiing),
+    Summer_skiing = as.logical(Summer_skiing)
+  ) %>%
+  na.omit()
+```
+
+```{r dont_include, include=FALSE}
+# Check for non-numeric values in Latitude and Longitude
+summary(resorts$Latitude)
+summary(resorts$Longitude)
+```
+
+```{r find_NA}
+# Check the number of rows with NA values in Latitude or Longitude
+missing_data <- resorts %>%
+  filter(is.na(Latitude) | is.na(Longitude))
+nrow(missing_data)  # Display the count of rows with missing Latitude or Longitude
+
+# Re-import data ensuring Latitude and Longitude are read as numeric
+resorts <- read_csv("resorts.csv", col_types = cols(
+  Latitude = col_double(),
+  Longitude = col_double()
+)) %>%
+  filter(!is.na(Latitude) & !is.na(Longitude))  # Filter out rows with NA in Latitude or Longitude
+```
+
+## 4. Exploratory Data Analysis
+
+```{r eda}
+# Adjust the number of clusters to the available data
+num_clusters <- min(5, nrow(resorts) - 1)  # Ensure we don't exceed available data
+
+# Perform clustering if we have at least two data points
+if (num_clusters > 1) {
+  set.seed(123)
+  geographical_clusters <- kmeans(resorts[, c("Latitude", "Longitude")], centers = num_clusters)
+  resorts$Cluster <- as.factor(geographical_clusters$cluster)
+} else {
+  print("Insufficient data for clustering even after cleaning.")
+}
+
+# Ensure that all character columns are in UTF-8 encoding
+resorts <- resorts %>%
+  mutate(across(where(is.character), ~ iconv(., from = "", to = "UTF-8")))
+
+# Join resorts and snow data by matching Latitude and Longitude
+resort_snow <- resorts %>%
+  inner_join(snow, by = c("Latitude", "Longitude"))
+
+snow_by_season <- resort_snow %>%
+  mutate(Month = month(Month, label = TRUE)) %>%
+  group_by(Season, Month) %>%
+  summarize(Average_Snow = mean(Snow, na.rm = TRUE), .groups = "drop")
+
+# Calculate elevation change and find resorts with the highest peaks and elevation changes
+resorts <- resorts %>%
+  mutate(Elevation_Change = Highest_point - Lowest_point)
+
+resorts$Resort <- gsub("[0-9?/~`^\\\\]", "", resorts$Resort)
+resorts$Resort <- gsub("\\(.*?\\)", "", resorts$Resort)
+```
+
+### Top 10 Highest Mountain Peaks
+
+This bar chart shows the resorts with the highest elevations. Resorts at higher altitudes generally offer a longer ski season and often better snow quality. High peaks also attract experienced skiers and snowboarders looking for challenging terrain.
+
+```{r mountain_peak}
+# Highest mountain peaks
+highest_peaks <- resorts %>%
+  arrange(desc(Highest_point)) %>%
+  select(Resort, Country, Highest_point) %>%
+  head(15)
+
+# Plot Highest Mountain Peaks
+ggplot(highest_peaks, aes(x = reorder(Resort, Highest_point), y = Highest_point)) +
+  geom_bar(stat = "identity", fill = "darkorange") +
+  labs(title = "Top 10 Highest Mountain Peaks", x = "Resort", y = "Highest Point (m)") +
+  theme_minimal() +
+  coord_flip()  # Flip for better readability
+```
+
+### Top 10 Largest Elevation Changes
+
+Elevation change, or vertical drop, is an essential factor for skiers. This chart highlights resorts with the largest elevation differences, which generally appeal to advanced skiers due to the potential for long, continuous runs.
+
+```{r elevation_changes}
+# Largest elevation changes
+largest_elevation_changes <- resorts %>%
+  arrange(desc(Elevation_Change)) %>%
+  select(Resort, Country, Elevation_Change) %>%
+  head(15)
+
+# Plot Largest Elevation Changes
+ggplot(largest_elevation_changes, aes(x = reorder(Resort, Elevation_Change), y = Elevation_Change)) +
+  geom_bar(stat = "identity", fill = "forestgreen") +
+  labs(title = "Top 10 Largest Elevation Changes", x = "Resort", y = "Elevation Change (m)") +
+  theme_minimal() +
+  coord_flip()  # Flip for better readability
+```
+
+### Top 10 Beginner-Friendly Resorts
+
+Beginner slopes are essential for novice skiers and families. This chart identifies resorts with a high percentage of beginner-friendly runs, making them ideal for those new to skiing or looking for gentler terrain.
+
+```{r beginner_friendly}
+# Define criteria for beginner-friendly resorts (e.g., high percentage of beginner slopes)
+beginner_resorts <- resorts %>%
+  arrange(desc(Beginner_slopes)) %>%
+  select(Resort, Country, Beginner_slopes) %>%
+  head(15)
+
+# Plot Beginner-Friendly Resorts
+ggplot(beginner_resorts, aes(x = reorder(Resort, Beginner_slopes), y = Beginner_slopes)) +
+  geom_bar(stat = "identity", fill = "lightblue") +
+  labs(title = "Top 10 Beginner-Friendly Resorts", x = "Resort", y = "Beginner Slopes (%)") +
+  theme_minimal() +
+  coord_flip()  # Flip for better readability
+```
+
+### Top 10 Expert-Friendly Resorts
+
+Featuring resorts with the highest percentage of difficult slopes, this chart is useful for advanced skiers and snowboarders. These resorts offer challenging runs that appeal to those seeking a high level of difficulty.
+
+```{r expert_friendly}
+# Define criteria for expert-friendly resorts (e.g., high percentage of difficult slopes)
+expert_resorts <- resorts %>%
+  filter(!is.na(resorts$Resort)) %>%
+  arrange(desc(Difficult_slopes)) %>%
+  filter(!is.na(Difficult_slopes)) %>%  # Remove rows with NA in Difficult_slopes
+  select(Resort, Country, Difficult_slopes) %>%
+  head(15)
+
+# Plot Expert-Friendly Resorts
+ggplot(expert_resorts, aes(x = reorder(Resort, Difficult_slopes), y = Difficult_slopes)) +
+  geom_bar(stat = "identity", fill = "darkred") +
+  labs(title = "Top 10 Expert-Friendly Resorts", x = "Resort", y = "Difficult Slopes (%)") +
+  theme_minimal() +
+  coord_flip()  # Flip for better readability
+```
+
+### Ski Resorts 
+
+```{r continent_resorts, fig.width= 9, fig.height= 8}
+snow_summary <- snow %>%
+  group_by(Latitude, Longitude) %>%
+  summarise(MeanSnow = mean(Snow))
+# Calculate the center of the map based on the data
+center_lat <- mean(snow_summary$Latitude, na.rm = TRUE)
+center_long <- mean(snow_summary$Longitude, na.rm = TRUE)
+
+pal <- colorFactor(palette = "Set1", domain = resorts$Continent)
+
+leaflet(data = resorts) %>%
+  addTiles() %>%
+  setView(lng = center_long, lat = center_lat, zoom = 2) %>%
+  addCircleMarkers(
+    ~Longitude, ~Latitude,
+    label = ~Resort,
+    color = ~pal(Continent),  # Color by Continent
+    fillOpacity = 0.5,
+    radius = 2
+  ) %>%
+  addLegend("topright", pal = pal, values = ~Continent, title = "Continents")
+```
+
+### Traffic Control Clustering of Ski Resorts
+
+This scatter plot categorizes resorts into clusters based on features like elevation change, lift capacity, and total lifts. Resorts with higher capacities and lift systems are well-suited for high-traffic days, ensuring shorter wait times and efficient skier movement.
+
+```{r elevation_lifts_capacity}
+# Choose clustering features: Elevation change, Total lifts, Lift capacity, Total slopes
+resort_features <- resorts %>%
+  select(Elevation_Change, Total_lifts, Lift_capacity, Total_slopes) %>%
+  na.omit()
+
+# Normalize features for clustering
+resort_features_scaled <- scale(resort_features)
+
+# Perform k-means clustering (tuning the number of clusters based on needs)
+set.seed(123)
+traffic_clusters <- kmeans(resort_features_scaled, centers = 4)
+resorts$Traffic_Cluster <- as.factor(traffic_clusters$cluster)
+
+# Visualize traffic clusters
+ggplot(resorts, aes(x = Elevation_Change, y = Total_lifts, color = Traffic_Cluster)) +
+  geom_point() +
+  labs(title = "Traffic Control Clustering of Ski Resorts", x = "Elevation Change", y = "Total Lifts")
+```
+
+### Countries with Most Ski Resorts
+
+A bar chart showing the number of ski resorts by country. It provides insights into the geographical popularity of skiing and helps identify countries where skiing is a major recreational or economic activity.
+
+```{r country_count}
+# Count ski resorts by country
+country_resort_count <- resorts %>%
+  group_by(Country) %>%
+  summarise(ResortCount = n())
+
+# Plotting noticeable clusters using a bar chart
+ggplot(country_resort_count, aes(x = reorder(Country, -ResortCount), y = ResortCount)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Countries with Most Ski Resorts", x = "Country", y = "Number of Resorts")
+```
+
+### Snow coverage 
+
+This interactive map displays mean snow coverage across different regions, which is helpful in identifying areas with reliable snowfall. Skiers who prioritize natural snow cover can use this map to choose destinations with consistent snow.
+
+```{r snow_coverage, fig.width= 9, fig.height= 8}
+# Calculate the center of the map based on the data
+center_lat <- mean(snow_summary$Latitude, na.rm = TRUE)
+center_long <- mean(snow_summary$Longitude, na.rm = TRUE)
+
+pal <- colorNumeric(palette = c("blue", "red"), domain = snow_summary$MeanSnow)
+
+# Plot interactive map with initial zoom level
+leaflet(data = snow_summary) %>%
+  addTiles() %>%
+  setView(lng = center_long, lat = center_lat, zoom = 2) %>%  # Set initial center and zoom level
+  addCircleMarkers(
+    ~Longitude, ~Latitude,
+    color = ~pal(MeanSnow),
+    fillOpacity = 0.2,
+    radius = 1,
+    popup = ~paste("Mean Snow Cover:", MeanSnow)
+  ) %>%
+  addLegend("topright", pal = pal, values = ~MeanSnow, title = "Mean Snow Cover")
+```
+
+### Continent-wise Resort Counts
+
+This bar chart shows the distribution of ski resorts across continents, highlighting which regions have the highest density of ski resorts.
+
+```{r continent_count}
+# Continent-wise resort counts
+continent_counts <- resorts %>%
+  group_by(Continent) %>%
+  summarise(ResortCount = n()) %>%
+  arrange(desc(ResortCount))
+
+# Plot continent-wise resort counts
+ggplot(continent_counts, aes(x = reorder(Continent, ResortCount), y = ResortCount)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Continent-wise Resort Counts", x = "Continent", y = "Number of Resorts") +
+  theme_minimal() +
+  coord_flip()  # Flip coordinates for better readability
+```
+
+### Top 10 Child-friendly countries
+
+By focusing on countries with a high number of child-friendly resorts, this chart is useful for families planning ski trips. Resorts that cater to young skiers typically have dedicated areas and beginner slopes.
+
+```{r child_friendly_countries}
+# Top 10 child-friendly countries (assuming 'Child_friendly' is a logical variable or 1/0)
+child_friendly_countries <- resorts %>%
+  filter(Child_friendly == "Yes") %>%
+  group_by(Country) %>%
+  summarise(ChildFriendlyResorts = n()) %>%
+  arrange(desc(ChildFriendlyResorts)) %>%
+  head(15)
+
+# Plot top 10 child-friendly countries
+ggplot(child_friendly_countries, aes(x = reorder(Country, ChildFriendlyResorts), y = ChildFriendlyResorts)) +
+  geom_bar(stat = "identity", fill = "lightgreen") +
+  labs(title = "Top 10 Child-Friendly Countries", x = "Country", y = "Number of Child-Friendly Resorts") +
+  theme_minimal() +
+  coord_flip()  # Flip coordinates for better readability
+```
+
+### Top 15 Resorts by Longest Run
+
+This section highlights the top 15 resorts with the longest ski runs. Longer runs generally appeal to intermediate and advanced skiers looking for continuous and varied terrain.
+
+```{r longest_run_resorts}
+# Select the top 15 resorts based on Longest Run
+top_longest_runs <- resorts %>%
+  filter(!is.na(resorts$Resort)) %>%
+  arrange(desc(Longest_run)) %>%
+  filter(!is.na(Longest_run)) %>%
+  head(15)
+#print(top_longest_runs$Resort)
+# Plot
+ggplot(top_longest_runs, aes(x = reorder(Resort, Longest_run), y = Longest_run)) +
+  geom_bar(stat = "identity", fill = "maroon") +
+  coord_flip() +
+  labs(title = "Top 15 Resorts by Longest Run", x = "Resort", y = "Longest Run (km)")
+
+```
+
+### Top 15 Resorts by Lift Capacity
+
+Here we examine resorts based on lift capacity, an indicator of a resort's ability to handle skier volume. Resorts with high lift capacities tend to have shorter wait times, which enhances the skiing experience.
+
+```{r lift_capacity_resorts}
+# Select the top 15 resorts based on Lift Capacity
+top_lift_capacity <- resorts %>%
+  filter(!is.na(resorts$Resort)) %>%
+  arrange(desc(Lift_capacity)) %>%
+  filter(!is.na(Lift_capacity)) %>%
+  head(15)
+
+# Plot
+ggplot(top_lift_capacity, aes(x = reorder(Resort, Lift_capacity), y = Lift_capacity)) +
+  geom_bar(stat = "identity", fill = "orange") +
+  coord_flip() +
+  labs(title = "Top 15 Resorts by Lift Capacity", x = "Resort", y = "Lift Capacity (people/hour)")
+```
+
+### Resorts in Europe with Night skiing facilities
+
+This map shows the European resorts that offer night skiing, a popular option for visitors who prefer skiing after dark or wish to extend their time on the slopes.
+
+```{r night_skiing_resorts, fig.width= 9, fig.height= 8}
+# Filter resorts located in Europe with Nightskiing facilities
+nightskiing_europe <- resorts %>%
+  filter(!is.na(resorts$Resort)) %>% 
+  filter(Continent == "Europe" & Nightskiing == "Yes") 
+#print(nightskiing_europe$Resort)
+nightskiing_europe <- nightskiing_europe %>% filter(!is.na(Resort))
+
+leaflet(data = nightskiing_europe) %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  setView(lng = center_long, lat = center_lat, zoom = 4) %>%
+  addCircleMarkers(
+    ~Longitude, ~Latitude,
+    label = ~as.character(nightskiing_europe),
+    color = "purple",
+    radius = 2,
+    popup = ~paste("Resort:", Resort, "<br>", "Nightskiing: Yes"),
+    fillOpacity = 0.5,
+    labelOptions = labelOptions(noHide = FALSE)
+  ) %>%
+  addLegend("topright", colors = "purple", labels = "Nightskiing Available", title = "Nightskiing Facilities")
+```
+
+### Resorts with Highest number of Gondola Lifts 
+
+This chart ranks the top resorts with the most gondola lifts. Gondola lifts provide significant capacity and are essential in high-traffic resorts to reduce wait times and offer comfortable transportation.
+
+```{r gondola_lifts_resorts}
+# Select resorts with the highest number of Gondola Lifts and arrange in descending order
+top_gondola_lifts <- resorts %>%
+  arrange(desc(Gondola_lifts)) %>%
+  filter(!is.na(Gondola_lifts)) %>%
+  head(15)
+
+# Plot
+ggplot(top_gondola_lifts, aes(x = reorder(Resort, Gondola_lifts), y = Gondola_lifts)) +
+  geom_bar(stat = "identity", fill = "forestgreen") +
+  coord_flip() +
+  labs(title = "Top Resorts by Number of Gondola Lifts", x = "Resort", y = "Number of Gondola Lifts")
+```
+
+### Resorts offering Summer Skiing with Snow Cannons
+
+This map shows European resorts that offer summer skiing and have snow cannons to ensure consistent snow cover during warmer months.
+
+Snow cannons, also known as "snow guns," are machines used to produce artificial snow by spraying a mist of water into the cold air, which freezes and falls as snow. These are crucial for maintaining snow coverage, especially in warmer seasons or areas with low natural snowfall, ensuring that ski trails are consistently covered and ready for skiers.
+
+```{r summer_cannons_resorts, fig.width= 9, fig.height= 8}
+# Filter resorts that offer Summer Skiing and have Snow Cannons
+summer_skiing_with_snow_cannons <- resorts %>%
+  filter(Summer_skiing == "Yes" & Snow_cannons > 0 & Continent == "Europe")
+center_lat <- mean(snow_summary$Latitude, na.rm = TRUE)
+center_long <- mean(snow_summary$Longitude, na.rm = TRUE)
+
+# Create map with Leaflet
+leaflet(data = summer_skiing_with_snow_cannons) %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  setView(lng = center_long, lat = center_lat, zoom = 5) %>%
+  addCircleMarkers(
+    ~Longitude, ~Latitude,
+    color = "green",
+    radius = 4,
+    label = ~Resort,
+    popup = ~paste("Resort:", Resort, "<br>", "Summer Skiing: Yes", "<br>", "Snow Cannons: Yes"),
+    fillOpacity = 0.5
+  ) %>%
+  addLegend("topright", colors = "green", labels = "Summer Skiing & Snow Cannons", title = "Summer Skiing with Snow Cannons")
+```
+
+## 5. Conclusion
+
+This analysis provides insights into various factors that skiers consider when choosing a resort. From lift capacity to night skiing availability, the diversity of facilities at different resorts allows them to cater to specific skiing preferences. This information will help skiers make informed decisions, whether they seek long runs, beginner-friendly slopes, or unique offerings like summer skiing. As data on ski resorts continues to grow, future analyses could reveal additional patterns and insights into the skiing industry.

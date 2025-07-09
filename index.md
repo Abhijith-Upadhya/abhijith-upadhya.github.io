@@ -10,7 +10,7 @@
 
 ## Violence on Women - Analysis and Prediction
 
-<a href = "https://github.com/Abhijith-Upadhya/abhijith-upadhya.github.io/tree/main/Violence%20on%20Women" target = "_blank"><img src="https://media.licdn.com/dms/image/v2/D5612AQEZkTV5_SqH_Q/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1714268684747?e=1735776000&v=beta&t=LJQxBUAlioMMrau9BuLC-MnOJp_WCXc24ly0H0NFh3E"/></a>
+<a href = "https://github.com/Abhijith-Upadhya/abhijith-upadhya.github.io/tree/main/Violence%20on%20Women" target = "_blank"><img src="./images/Violence on women.png" alt="Violence on Women" width="1280" height="700"/></a>
 
 ---
 

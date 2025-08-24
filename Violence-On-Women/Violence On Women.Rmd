@@ -1,0 +1,616 @@
+---
+title: ' '
+author: "Abhijith R Upadhya"
+date: "`r Sys.Date()`"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# **Violence on Women - Analysis and Prediction**
+
+![Source: Media Licdn.](https://media.licdn.com/dms/image/v2/D5612AQEZkTV5_SqH_Q/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1714268684747?e=1735776000&v=beta&t=LJQxBUAlioMMrau9BuLC-MnOJp_WCXc24ly0H0NFh3E){height=500}
+
+## Introduction
+
+In this analysis, we explore a dataset on domestic violence and examine several variables to understand their distribution, relationships, and potential predictive power for violence occurrence. Key variables include Age, Income, Education, Employment, and Marital Status. The aim is to preprocess the data, visualize patterns, and implement machine learning models to predict occurrences of violence.
+
+## Libraries
+
+```{r packages_libraries, include=TRUE}
+
+library(e1071)
+library(rpart)
+library(randomForest)
+library(class)
+library(ROSE)
+library(caret)
+library(gridExtra)
+library(tidyr)
+library(RColorBrewer)
+library(tidyverse)
+library(corrplot)
+library(ggplot2)
+library(viridis)
+library(dplyr)
+```
+
+## Loading the dataset
+
+``` {r load_dataset}
+# Read the dataset
+df <- read.csv("Domestic_violence.csv")
+```
+
+## Data Transformation
+
+### Data Preparation and Cleaning
+
+Loading Packages and Dataset: Load necessary libraries for data manipulation, visualization, and modeling. The dataset is read and cleaned to prepare for analysis.
+Handling Missing Values and Duplicate Records: Check for and handle null values, duplicates, and inconsistent entries.
+
+Feature Engineering: Binarize categorical variables like Marital_status, Education, Employment, and Violence for better model compatibility. Additionally, some columns are trimmed and converted to binary form where applicable.
+
+```{r data_transformation}
+# Data preparation
+df <- df %>% 
+  select(-'Sl.No.') %>%
+  mutate(across(c('Education', 'Employment', 'Marital_status'), as.character)) %>%
+  mutate(Employment = trimws(Employment))
+
+# Check dimensions
+dim(df)
+
+# Check data types
+str(df)
+
+# Check for null values
+colSums(is.na(df))
+
+# Count distinct values for each column
+sapply(df, function(x) length(unique(x)))
+
+# Binarize the dataset
+df <- df %>%
+  mutate(
+    marital_binary = case_when(
+      Marital_status == 'married' ~ 1,
+      Marital_status == 'unmarred' ~ 0
+    ),
+    Violence = case_when(
+      Violence == 'yes' ~ 1,
+      Violence == 'no' ~ 0
+    ),
+    education_binary = case_when(
+      Education == 'none' ~ 0,
+      Education == 'primary' ~ 1,
+      Education == 'secondary' ~ 2,
+      Education == 'tertiary' ~ 3
+    ),
+    employment_binary = case_when(
+      Employment == 'unemployed' ~ 0,
+      Employment == 'semi employed' ~ 1,
+      Employment == 'employed' ~ 2
+    )
+  )
+
+# Check zero income count
+sum(df$Income == 0)
+
+# Check outliers - Employed/Semi-employed with zero income
+mask <- df %>%
+  filter(Income == 0 & (Employment == "employed" | Employment == "semi employed"))
+print(mask)
+
+# Check duplicates
+duplicate_rows <- df[duplicated(df), ]
+cat("Number of duplicate rows:", nrow(duplicate_rows))
+
+# Summary statistics
+summary(df)
+```
+
+## Data Visualisation and Analysis
+
+### 1. Histograms and Density Plots:
+
+Age Distribution: Examines the age distribution within the dataset.
+
+```{r age_distribution}
+# Create histograms
+par(mfrow = c(1, 2))
+hist_age <- ggplot(df, aes(x = Age)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30) +
+  geom_density() +
+  theme_minimal() +
+  labs(title = "Age Distribution")
+```
+
+Income Distribution: Analyzes the income distribution with a focus on zero-income cases.
+
+```{r income_distribution}
+hist_income <- ggplot(df, aes(x = Income)) +
+  geom_histogram(bins = 30) +
+  theme_minimal() +
+  labs(title = "Income Distribution")
+
+grid.arrange(hist_age, hist_income, ncol = 2)
+```
+
+### 2. Boxplot of Income: 
+
+A boxplot reveals the spread and presence of any potential outliers within the income data.
+
+```{r income_boxplot}
+# Create boxplot
+ggplot(df, aes(y = Income)) +
+  geom_boxplot(width = 0.2) +
+  theme_minimal() +
+  labs(title = "Income Distribution Boxplot")
+```
+
+### 3. Correlation Between Features
+
+A correlation matrix visualizes relationships among features. Insights from this plot help guide the selection of features for machine learning models.
+
+```{r filterzeroincome, include = FALSE}
+# Filter zero income
+zero_income <- df %>% filter(Income == 0)
+print(zero_income)
+```
+
+```{r correlation_matrix}
+# Correlation matrix
+df_binary <- df %>%
+  select(Age, education_binary, employment_binary, Income, marital_binary, Violence)
+
+correlation_matrix <- cor(df_binary)
+corrplot(correlation_matrix, 
+         method = "color", 
+         type = "upper", 
+         addCoef.col = "black",
+         number.cex = 0.7,
+         col = viridis(100))
+
+# Define color palettes
+palette <- c("#0096c7", "#00b4d8", "#48cae4", "#90e0ef")
+palette_pie <- c("#0096c7", "#e3f2fd", "#bbdefb", "#90caf9")
+
+```
+
+### 4. Relevant Pie Charts:
+
+Violence Distribution: Displays the percentage distribution of reported domestic violence cases.
+
+Marital Status, Employment, and Education: These charts provide a visual overview of the dataset’s composition in terms of marital status, employment, and education levels.
+
+```{r thefour_piecharts}
+# Display first 10 rows
+head(df, 10)
+
+# Distribution of features - Create 4 pie charts
+# Violence View
+p1 <- df %>%
+  count(Violence) %>%
+  mutate(
+    prop = n/sum(n),
+    label = c("No", "Yes"),
+    pct = paste0(round(prop * 100, 1), "%")
+  ) %>%
+  ggplot(aes(x = "", y = prop, fill = factor(label))) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  geom_text(aes(label = pct), position = position_stack(vjust = 0.5)) +
+  scale_fill_manual(values = palette_pie) +
+  labs(title = "Violence View") +
+  theme_void() +
+  theme(legend.title = element_blank())
+
+# Marital View
+p2 <- df %>%
+  count(Marital_status) %>%
+  mutate(
+    prop = n/sum(n),
+    pct = paste0(round(prop * 100, 1), "%")
+  ) %>%
+  ggplot(aes(x = "", y = prop, fill = Marital_status)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  geom_text(aes(label = pct), position = position_stack(vjust = 0.5)) +
+  scale_fill_manual(values = palette_pie) +
+  labs(title = "Marital View") +
+  theme_void() +
+  theme(legend.title = element_blank())
+
+# Employment View
+p3 <- df %>%
+  count(Employment) %>%
+  mutate(
+    prop = n/sum(n),
+    pct = paste0(round(prop * 100, 1), "%")
+  ) %>%
+  ggplot(aes(x = "", y = prop, fill = Employment)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  geom_text(aes(label = pct), position = position_stack(vjust = 0.5)) +
+  scale_fill_manual(values = palette_pie) +
+  labs(title = "Employment View") +
+  theme_void() +
+  theme(legend.title = element_blank())
+
+# Education View
+p4 <- df %>%
+  count(Education) %>%
+  mutate(
+    prop = n/sum(n),
+    pct = paste0(round(prop * 100, 1), "%")
+  ) %>%
+  ggplot(aes(x = "", y = prop, fill = Education)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  geom_text(aes(label = pct), position = position_stack(vjust = 0.5)) +
+  scale_fill_manual(values = palette_pie) +
+  labs(title = "Education View") +
+  theme_void() +
+  theme(legend.title = element_blank())
+
+# Arrange all pie charts in a grid
+grid.arrange(p1, p2, p3, p4, ncol = 2)
+```
+
+### Scatter plots of Age and Income for violence cases highlight potential patterns.
+
+```{r ageincome_scatterplot}
+# Age & Income x Violence
+violence_data <- df %>% filter(Violence == 1)
+
+# Create scatter plots for Age and Income
+p5 <- ggplot(violence_data, aes(x = Age, y = Age)) +
+  geom_point() +
+  theme_minimal()
+
+p6 <- ggplot(violence_data, aes(x = Income, y = Age)) +
+  geom_point() +
+  theme_minimal()
+
+grid.arrange(p5, p6, ncol = 2)
+```
+
+### Education and Violence Bar Plot: Demonstrates the relationship between education levels and violence incidence.
+
+```{r educationxviolence}
+# Education x Violence
+ggplot(df, aes(y = Education, fill = factor(Violence))) +
+  geom_bar(position = "dodge") +
+  scale_fill_manual(values = palette, labels = c("No", "Yes")) +
+  labs(title = "Violence x Education", x = "Violence Qty", fill = "Violence") +
+  theme_minimal()
+```
+
+### Marital Status and Employment for Violence cases
+
+```{r maritalstatus_employment}
+# Marital Status and Employment for Violence cases
+violence_plots <- df %>%
+  filter(Violence == 1) %>%
+  {
+    list(
+      ggplot(., aes(x = Marital_status)) +
+        geom_bar(fill = palette[1]) +
+        theme_minimal() +
+        labs(y = ""),
+      
+      ggplot(., aes(x = Employment)) +
+        geom_bar(fill = palette[1]) +
+        theme_minimal() +
+        labs(y = "")
+    )
+  }
+
+grid.arrange(grobs = violence_plots, ncol = 2)
+```
+
+### Relationships of Education, Age, Marital Status, and Income with one another
+
+```{r jitter_pointplots}
+# Education x Age, Marital Status x Age, Education x Income
+p7 <- ggplot(df, aes(x = Education, y = Age)) +
+  geom_jitter(width = 0.2) +
+  theme_minimal()
+
+p8 <- ggplot(df, aes(x = Marital_status, y = Age)) +
+  geom_jitter(width = 0.2) +
+  theme_minimal()
+
+p9 <- ggplot(df, aes(x = Education, y = Income)) +
+  geom_point() +
+  theme_minimal()
+
+grid.arrange(p7, p8, p9, ncol = 3)
+```
+
+### Average Income per Education Level
+
+```{r avgincome}
+# Average income per Education Level
+average_income_per_education <- df %>%
+  group_by(Education) %>%
+  summarise(Income = round(mean(Income), 2)) %>%
+  arrange(Income)
+
+print(average_income_per_education)
+
+ggplot(average_income_per_education, aes(x = Education, y = Income, fill = Education)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = palette) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+### Binarizing the dataset and creating dummy variables for categorical features
+
+```{r binarizing_dataset}
+# Binarizing the dataset
+binary_features <- df %>% select(Age, Income, Violence)
+
+# Creating dummy variables for the categorical features
+# Excluding the already binarized columns
+dummie_features <- df %>% 
+  select(-Age, -Income, -Violence, -marital_binary, -education_binary, -employment_binary) %>%
+  mutate(across(everything(), ~ ifelse(. == TRUE, 1, 0)))  # Transform TRUE/FALSE into 1/0
+
+# Combining binary features with dummy features
+df_ml <- cbind(binary_features, dummie_features)
+
+# Plot original dataset Violence distribution
+p1 <- ggplot(df_ml, aes(x = as.factor(Violence))) +
+  geom_bar(fill = palette[1]) +
+  labs(title = "Violence Distribution in Original Data", x = "Violence") +
+  theme_minimal()
+```
+
+## Data Resampling
+
+To address class imbalance in the violence variable, the SMOTE (Synthetic Minority Over-sampling Technique) technique is used. This resampling method balances the dataset by generating synthetic instances of the minority class (violence cases).
+
+```{r data_resampling}
+# Re-sampling the dataset using SMOTE
+set.seed(123)  # Set seed for reproducibility
+table(df_ml$Violence)
+
+# Set N to be larger than the total number of rows in the dataset
+total_samples <- nrow(df_ml)
+N_target <- 2 * total_samples  # Set to twice the total number of rows to ensure oversampling
+
+# Apply SMOTE using the larger N value
+smote_data <- ovun.sample(Violence ~ ., data = df_ml, method = "over", N = N_target)$data
+
+# Plot resampled dataset Violence distribution
+p2 <- ggplot(smote_data, aes(x = as.factor(Violence))) +
+  geom_bar(fill = palette[1]) +
+  labs(title = "Violence Distribution after SMOTE", x = "Violence") +
+  theme_minimal()
+
+# Arrange both plots side by side
+grid.arrange(p1, p2, ncol = 2)
+
+# Randomly shuffle the resampled dataset
+df_ml_sample <- smote_data[sample(nrow(smote_data)), ]
+
+SEED <- 158020
+set.seed(SEED)
+
+# Prepare the dataset: Exclude the 'Violence' column from features (X) and define the target (y)
+x <- df_ml_sample %>% select(-Violence)
+y <- df_ml_sample$Violence
+
+# Normalize the features using the preProcess function from the caret package
+norm <- preProcess(x, method = c("center", "scale"))
+x_norm <- predict(norm, x)
+```
+
+## Model Training and Evaluation
+
+### Baseline and Predictive Models
+
+```{r run_model}
+# Split the data into training and testing sets
+set.seed(123)
+trainIndex <- createDataPartition(y, p = 0.7, list = FALSE)
+train_x <- x_norm[trainIndex, ]
+test_x <- x_norm[-trainIndex, ]
+train_y <- y[trainIndex]
+test_y <- y[-trainIndex]
+
+# Function to run model scores
+model <- function(model, test_x, test_y) {
+  predictions <- predict(model, newdata = test_x)
+  accuracy <- mean(predictions == test_y) * 100
+  conf_matrix <- confusionMatrix(predictions, as.factor(test_y))
+  
+  print(conf_matrix)
+  print(sprintf("Accuracy: %.2f%%", accuracy))
+}
+```
+
+Baseline Random Forest: Establishes a benchmark for accuracy against which other models are compared.
+
+```{r baseline}
+# Dummy Classifier - Baseline
+dummy_model <- train(train_x, as.factor(train_y), method = "rf", trControl = trainControl(method = "cv", number = 5))
+model(dummy_model, test_x, test_y)
+```
+
+Naive Bayes Classifier: A simple probabilistic classifier based on Bayes' theorem.
+
+```{r naivebayes}
+# Naive Bayes Classifier
+nb_model <- naiveBayes(as.factor(train_y) ~ ., data = train_x)
+model(nb_model, test_x, test_y)
+```
+
+Decision Tree: Provides interpretable results to identify key features influencing violence.
+
+```{r decisiontree}
+# Decision Tree Classifier
+tree_model <- rpart(as.factor(train_y) ~ ., data = train_x, method = "class", control = rpart.control(maxdepth = 2))
+
+# Updated model function to ensure class predictions for decision trees
+model <- function(model, test_x, test_y) {
+  if ("rpart" %in% class(model)) {
+    # For rpart models, get class predictions directly
+    predictions <- predict(model, newdata = test_x, type = "class")
+  } else {
+    # For other models, assume normal predict works fine
+    predictions <- predict(model, newdata = test_x)
+  }
+  
+  accuracy <- mean(predictions == test_y) * 100
+  conf_matrix <- confusionMatrix(predictions, as.factor(test_y))
+  
+  print(conf_matrix)
+  print(sprintf("Accuracy: %.2f%%", accuracy))
+}
+
+# Run the model evaluation again for Decision Tree
+model(tree_model, test_x, test_y)
+```
+
+K-Nearest Neighbors (KNN): Applied with both Euclidean and Hamming distances.
+
+```{r knn}
+# K-Nearest Neighbors (KNN)
+# With Euclidean distance
+knn_model_euclidean <- knn(train = train_x, test = test_x, cl = train_y, k = 5)
+confusionMatrix(knn_model_euclidean, as.factor(test_y))
+
+# With Hamming distance (more suitable for binary data)
+knn_model_hamming <- knn(train = train_x, test = test_x, cl = train_y, k = 4)
+confusionMatrix(knn_model_hamming, as.factor(test_y))
+```
+
+Random Forest: Offers higher accuracy by averaging multiple decision trees.
+
+```{r randomforest}
+# Random Forest Classifier
+rf_model <- randomForest(as.factor(train_y) ~ ., data = train_x, ntree = 100)
+model(rf_model, test_x, test_y)
+
+
+# Define a function to print results
+print_results <- function(results) {
+  mean_acc <- mean(results$results$Accuracy)
+  std_acc <- sd(results$results$Accuracy)
+  cat(sprintf("Average Accuracy: %.2f%%\n", mean_acc * 100))
+  cat(sprintf("Accuracy interval: [%.2f, %.2f]%%\n", (mean_acc - 2 * std_acc) * 100, (mean_acc + 2 * std_acc) * 100))
+}
+```
+
+### Model Performance Evaluation
+
+Confusion Matrix and Accuracy: Each model's performance is evaluated using accuracy and confusion matrix metrics to assess the classification quality.
+
+Cross-Validation: All models undergo cross-validation to provide robust performance metrics and avoid overfitting.
+
+```{r crossvalidation}
+# Set random seed
+set.seed(158020)
+
+# Define cross-validation method
+train_control <- trainControl(method = "cv", number = 10)
+
+# Prepare the dataset (x and y are from previous steps, assuming they are ready)
+# x_norm and y are normalized features and target (Violence) from the previous steps
+
+# Ensure y is named properly and combine with x_norm
+df_combined <- cbind(x_norm, Violence = y)  # Rename your target variable appropriately
+
+# Check column names of df_combined to ensure there's no mismatch
+colnames(df_combined)
+
+# Decision Tree Classifier with cross-validation
+tree_model <- train(as.factor(Violence) ~ ., data = df_combined, 
+                    method = "rpart", 
+                    trControl = train_control, 
+                    tuneGrid = expand.grid(cp = 0.01),  # Cross-validation on complexity parameter
+                    control = rpart.control(maxdepth = 2))
+
+# Check the results
+tree_model
+
+# Print cross-validation results for Decision Tree
+print_results(tree_model)
+
+# K-Nearest Neighbors with cross-validation
+knn_model <- train(as.factor(Violence) ~ ., data = df_combined, 
+                   method = "knn", 
+                   metric = "Accuracy", 
+                   tuneGrid = expand.grid(k = 3),  # 3 neighbors
+                   trControl = train_control)
+
+# Print cross-validation results for KNN
+print_results(knn_model)
+
+# Random Forest with cross-validation
+rf_model <- train(as.factor(Violence) ~ ., data = df_combined, 
+                  method = "rf", 
+                  trControl = train_control, 
+                  tuneGrid = expand.grid(mtry = 3))  # mtry can be adjusted or optimized
+
+# Print cross-validation results for Random Forest
+print_results(rf_model)
+```
+
+### Hyperparameter Tuning
+
+Grid Search for KNN and Random Forest: An optimal number of neighbors (k) for KNN and best 'mtry' values for Random Forest are identified using grid search, maximizing accuracy.
+
+```{r hypertuning}
+# Grid Search for KNN (search for optimal 'k')
+knn_grid <- expand.grid(k = 1:31)  # Searching k from 1 to 31
+
+knn_grid_search <- train(as.factor(Violence) ~ ., data = df_combined, 
+                         method = "knn", 
+                         trControl = trainControl(method = "cv", number = 10), 
+                         tuneGrid = knn_grid)
+
+# Make predictions using the best model from Grid Search
+knn_predictions <- predict(knn_grid_search, newdata = test_x)
+
+# Evaluate the KNN model
+confusionMatrix(knn_predictions, as.factor(test_y))
+cat("Best number of neighbors:", knn_grid_search$bestTune$k, "\n")
+
+# Define the tuning grid for mtry (number of predictors randomly sampled at each split)
+rf_grid <- expand.grid(mtry = c(1, 2, 3, 4, 5))  # Adjust values as needed
+
+# Perform grid search with cross-validation for Random Forest
+rf_grid_search <- train(as.factor(Violence) ~ ., data = df_combined, 
+                        method = "rf", 
+                        trControl = trainControl(method = "cv", number = 10), 
+                        tuneGrid = rf_grid)  # Use the proper tuneGrid with mtry
+
+# Check the results
+rf_grid_search
+# Make predictions using the best Random Forest model from Grid Search
+rf_predictions <- predict(rf_grid_search, newdata = test_x)
+
+# Evaluate the Random Forest model
+confusionMatrix(rf_predictions, as.factor(test_y))
+```
+
+## Results and Discussion
+
+### Comparison of Models: 
+
+Accuracy metrics reveal that Random Forest consistently provides strong performance, followed by the Decision Tree and Naive Bayes models.
+
+### Interpretation of Findings:
+Education level, employment status, and age appear to correlate with the likelihood of violence cases.
+Employment status and marital status are prominent indicators in the classification of violence cases.
+
+## Conclusion
+
+This analysis effectively identifies patterns associated with domestic violence using multiple machine learning techniques. Random Forest and Decision Tree classifiers offer high accuracy and are suitable for interpreting feature importance. Our findings underscore the impact of socioeconomic factors on violence prevalence, and these models can assist in targeted interventions. Future work could expand on this analysis by incorporating additional features and testing on larger datasets for broader applicability.

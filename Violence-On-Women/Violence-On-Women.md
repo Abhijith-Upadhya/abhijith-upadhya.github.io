@@ -4,9 +4,8 @@ Abhijith R Upadhya
 # **Violence on Women - Analysis**
 
 <figure>
-<img
-src="https://media.licdn.com/dms/image/v2/D5612AQEZkTV5_SqH_Q/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1714268684747?e=1735776000&amp;v=beta&amp;t=LJQxBUAlioMMrau9BuLC-MnOJp_WCXc24ly0H0NFh3E"
-height="500" alt="Source: Media Licdn." />
+<img src="https://cesie.org/media/violenza_donne.jpg" height="500"
+alt="Source: Media Licdn." />
 <figcaption aria-hidden="true">Source: Media Licdn.</figcaption>
 </figure>
 

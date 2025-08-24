@@ -1,7 +1,7 @@
 Abhijith R Upadhya
 2025-08-24
 
-# **Violence on Women - Analysis and Prediction**
+# **Violence on Women - Analysis**
 
 <figure>
 <img

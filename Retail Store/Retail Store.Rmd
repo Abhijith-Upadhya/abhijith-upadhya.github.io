@@ -1,13 +1,15 @@
 ---
-title: "Retail Store Inventory Analysis"
-author: "Abhijith"
+title: ' '
+author: "Abhijith R Upadhya"
 date: "`r Sys.Date()`"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = TRUE)
 ```
+
+# **Retail Store Inventory Analysis**
 
 ![Source: Inventory Analysis.](https://bizom.com/wp-content/uploads/2023/04/Unlocking-the-Benefits-of-Inventory-Management-Software-blog-banner-image.jpg)
 
